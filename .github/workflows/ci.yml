@@ -3,9 +3,7 @@ name: project-practicum-ci
 on:
   pull_request:
     branches:
-      - main
       - master
-      - develop
       - '*'
 
 jobs:
@@ -13,6 +11,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
       - name: Set up JDK
         uses: actions/setup-java@v4
         with:
