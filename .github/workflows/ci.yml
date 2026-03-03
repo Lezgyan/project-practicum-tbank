@@ -27,3 +27,24 @@ jobs:
       # Сборка (если нужно отдельно от check)
       - name: Build
         run: ./gradlew --no-daemon build
+  
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'     # поменяй на свою версию при необходимости
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
+      # Сборка (если нужно отдельно от check)
+      - name: Build
+        run: ./gradlew --no-daemon spotless::spotlessCheck
