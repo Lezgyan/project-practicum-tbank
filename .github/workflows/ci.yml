@@ -42,8 +42,5 @@ jobs:
           java-version: '25'     # поменяй на свою версию при необходимости
           cache: gradle
 
-      - name: Fake linter
-        run: echo 'LINTLINTLINTLINTLINTLINT'
-
-      # - name: Linter
-      #   run: ./gradlew --no-daemon spotlessCheck
+      - name: Linter
+        run: ./gradlew --no-daemon spotlessCheck
