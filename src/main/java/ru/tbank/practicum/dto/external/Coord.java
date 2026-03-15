@@ -1,8 +1,3 @@
 package ru.tbank.practicum.dto.external;
 
-
-public record Coord(
-     double lon,
-     double lat
-){
-}
+public record Coord(Double lon, Double lat) {}

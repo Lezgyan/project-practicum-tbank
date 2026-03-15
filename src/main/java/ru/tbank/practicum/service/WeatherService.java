@@ -1,5 +1,8 @@
 package ru.tbank.practicum.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import ru.tbank.practicum.dto.external.DtoWeatherResponse;
@@ -11,8 +14,6 @@ import ru.tbank.practicum.mapper.MapperCoordinate;
 import ru.tbank.practicum.mapper.MapperWeather;
 import ru.tbank.practicum.repository.WeatherRepository;
 
-import java.util.List;
-
 @Service
 public class WeatherService {
     private final RestClient restClient;
@@ -23,25 +24,30 @@ public class WeatherService {
 
     private final MapperWeather mapperWeather;
 
-//    @Value("${app.cred.token}")
-    private final String token = "";
+    @Value("${app.cred.token}")
+    private String token;
 
-    public WeatherService(RestClient restClient,
-                          WeatherRepository weaherRepository,
-                          MapperCoordinate mapperCoordinate,
-                          MapperWeather mapperWeather) {
+    @Value("${app.path}")
+    private String path;
+
+    public WeatherService(
+            RestClient restClient,
+            WeatherRepository weatherRepository,
+            MapperCoordinate mapperCoordinate,
+            MapperWeather mapperWeather) {
         this.restClient = restClient;
-        this.weatherRepository = weaherRepository;
+        this.weatherRepository = weatherRepository;
         this.mapperCoordinate = mapperCoordinate;
         this.mapperWeather = mapperWeather;
     }
 
     public DtoWeather getWeatherByCoordinate(DtoCoordinate dtoCoordinate) {
-        EntityCoordinate entityCoordinate = mapperCoordinate.mapToEntity(dtoCoordinate);
+        EntityCoordinate entityCoordinate = mapperCoordinate.mapToEntityCoordinate(dtoCoordinate);
 
-        DtoWeatherResponse weatherResponse = restClient.get()
+        DtoWeatherResponse weatherResponse = restClient
+                .get()
                 .uri(uriBuilder -> uriBuilder
-                        .path("/data/2.5/weather")
+                        .path(path)
                         .queryParam("lat", entityCoordinate.lat())
                         .queryParam("lon", entityCoordinate.lon())
                         .queryParam("units", "metric")
@@ -50,16 +56,17 @@ public class WeatherService {
                 .retrieve()
                 .body(DtoWeatherResponse.class);
 
-        //weaherRepository.save();
+        weatherRepository.save(mapperWeather.mapToEntityWeather(weatherResponse));
+
         return mapperWeather.mapToDtoWeather(weatherResponse);
     }
 
-
     public List<DtoWeather> getForecasts() {
         List<EntityWeather> entities = weatherRepository.getAll();
-        return entities.stream()
-                .map(mapperWeather::mapToDtoWeather)
-                .toList();
+        return new ArrayList<>(List.of(new DtoWeather(1L, 12.0, "testing")));
+        //        return entities.stream()
+        //                .map(mapperWeather::mapToDtoWeather)
+        //                .toList();
     }
 
     public DtoWeather getForecast(Long id) {
@@ -70,5 +77,4 @@ public class WeatherService {
     public void deleteForecast(Long id) {
         weatherRepository.deleteById(id);
     }
-
 }

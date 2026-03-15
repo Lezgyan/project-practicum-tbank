@@ -2,11 +2,9 @@ package ru.tbank.practicum.entity;
 
 public record EntityWeather(
         Long id,
-        double temperature,
+        Double temperature,
         String description,
-        int pressure,
-        double windSpeed,
-        double latCoordinate,
-        double lonCoordinate
-) {
-}
+        Integer pressure,
+        Double windSpeed,
+        Double latCoordinate,
+        Double lonCoordinate) {}

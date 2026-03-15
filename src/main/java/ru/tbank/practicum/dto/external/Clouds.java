@@ -1,6 +1,3 @@
 package ru.tbank.practicum.dto.external;
 
-public record Clouds(
-        int all
-) {
-}
+public record Clouds(Integer all) {}

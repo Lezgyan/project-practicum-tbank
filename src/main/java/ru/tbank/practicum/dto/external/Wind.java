@@ -1,8 +1,3 @@
 package ru.tbank.practicum.dto.external;
 
-public record Wind(
-        double speed,
-        int deg,
-        double gust
-) {
-}
+public record Wind(Double speed, Integer deg, Double gust) {}

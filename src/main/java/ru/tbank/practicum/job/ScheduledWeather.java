@@ -1,25 +1,31 @@
 package ru.tbank.practicum.job;
 
-
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.tbank.practicum.dto.internal.DtoCoordinate;
+import ru.tbank.practicum.dto.internal.DtoWeather;
 import ru.tbank.practicum.service.WeatherService;
 
-import java.util.Date;
-
+@Slf4j
 @Component
 public class ScheduledWeather {
     private final WeatherService weatherService;
+
+    @Value("${app.baseCoordinateLat}")
+    private Double lat;
+
+    @Value("${app.baseCoordinateLon}")
+    private Double lon;
 
     public ScheduledWeather(WeatherService weatherService) {
         this.weatherService = weatherService;
     }
 
-    @Scheduled(fixedRate = 50000)
-    private void reportCurrentWeather(){
-        var k = weatherService.getWeatherByCoordinate(new DtoCoordinate(51.32, 46.00));
-        System.out.println(k.description());
-        System.out.println(k.temperature());
+    @Scheduled(fixedRateString = "${app.scheduler.rate}")
+    private void reportCurrentWeather() {
+        DtoWeather dtoWeather = weatherService.getWeatherByCoordinate(new DtoCoordinate(lat, lon));
+        log.info(String.valueOf(dtoWeather));
     }
 }

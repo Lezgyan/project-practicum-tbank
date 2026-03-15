@@ -1,21 +1,37 @@
 package ru.tbank.practicum.controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+import ru.tbank.practicum.dto.internal.DtoTemperature;
+import ru.tbank.practicum.service.BatteryService;
 
 @RestController
-@RequestMapping("battery")
+@RequestMapping("/battery")
 public class BatteryController {
 
-    @PostMapping("/increaseTemperature")
-    public void increaseTemperature(){
+    private final BatteryService batteryService;
 
+    public BatteryController(BatteryService batteryService) {
+        this.batteryService = batteryService;
+    }
+
+    @PostMapping("/increaseTemperature")
+    public void increaseTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.upTemperature(dtoTemperature);
     }
 
     @PostMapping("/reduceTemperature")
-    public void reduceTemperature(){
-
+    public void reduceTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.downTemperature(dtoTemperature);
     }
 
+    @GetMapping("/getCurrentTemperature")
+    public DtoTemperature getTemperature() {
+        return batteryService.getCurrentTemperature();
+    }
+
+    @PostMapping("/setCurrentTemperature")
+    public void setTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.setTemperature(dtoTemperature);
+    }
 }
