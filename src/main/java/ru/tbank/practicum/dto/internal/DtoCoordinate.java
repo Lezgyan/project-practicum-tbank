@@ -8,4 +8,5 @@ public record DtoCoordinate(
         @Min(-90) @Max(90) @NotNull(message = "lat не задан")
         Double lat,
 
-        @Min(-180) @Max(180) @NotNull(message = "lon не задан") Double lon) {}
+        @Min(-180) @Max(180) @NotNull(message = "lon не задан")
+        Double lon) {}

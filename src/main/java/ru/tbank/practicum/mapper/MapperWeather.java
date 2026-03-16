@@ -27,6 +27,9 @@ public interface MapperWeather {
 
     @Named("firstDescription")
     default String firstDescription(List<Weather> weather) {
-        return weather.getFirst().description();
+        if (weather != null && !weather.isEmpty() && weather.getFirst() != null) {
+            return weather.getFirst().description();
+        }
+        return null;
     }
 }

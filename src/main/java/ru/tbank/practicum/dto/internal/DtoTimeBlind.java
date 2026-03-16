@@ -6,5 +6,5 @@ import ru.tbank.practicum.validation.ValidTimeOpeningAndClosingBlind;
 
 @ValidTimeOpeningAndClosingBlind
 public record DtoTimeBlind(
-        @NotNull(message = "time не задан") Instant openingTime,
-        @NotNull(message = "time не задан") Instant closingTime) {}
+        @NotNull(message = "openingTime не задан") Instant openingTime,
+        @NotNull(message = "closingTime не задан") Instant closingTime) {}
