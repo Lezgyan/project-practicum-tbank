@@ -15,6 +15,15 @@ public class TimeBlindValidator implements ConstraintValidator<ValidTimeOpeningA
             return true;
         }
 
-        return dtoTimeBlind.openingTime().isBefore(dtoTimeBlind.closingTime());
+        boolean checkValid = dtoTimeBlind.openingTime().isBefore(dtoTimeBlind.closingTime());
+
+        if (!checkValid) {
+            constraintValidatorContext.disableDefaultConstraintViolation();
+            constraintValidatorContext
+                    .buildConstraintViolationWithTemplate("openingTime должен быть раньше closingTime")
+                    .addPropertyNode("openingTime")
+                    .addConstraintViolation();
+        }
+        return checkValid;
     }
 }
