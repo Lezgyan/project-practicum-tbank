@@ -16,11 +16,7 @@ public class BlindRepository {
         log.info("Close blind");
     }
 
-    public void setOpeningTime(EntityTimeBlind entityTimeBlind) {
-        log.info("Set opening time");
-    }
-
-    public void setClosingTime(EntityTimeBlind entityTimeBlind) {
-        log.info("Set closing time ");
+    public void setOpeningAndClosingTime(EntityTimeBlind entityTimeBlind) {
+        log.info("Set opening and closing time ");
     }
 }

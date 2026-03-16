@@ -28,13 +28,8 @@ public class BlindController {
         blindService.closeBlind();
     }
 
-    @PostMapping("/setClosingTime")
-    public void setClosingTime(@Valid @RequestBody DtoTimeBlind dtoTimeBlind) {
-        blindService.setClosingTime(dtoTimeBlind);
-    }
-
-    @PostMapping("/setOpeningTime")
-    public void setOpeningTime(@Valid @RequestBody DtoTimeBlind dtoTimeBlind) {
-        blindService.setOpeningTime(dtoTimeBlind);
+    @PostMapping("/setOpeningAndClosingTime")
+    public void setOpeningAndClosingTime(@Valid @RequestBody DtoTimeBlind dtoTimeBlind) {
+        blindService.setOpeningAndClosingTime(dtoTimeBlind);
     }
 }

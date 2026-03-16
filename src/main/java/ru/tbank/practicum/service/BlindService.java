@@ -26,13 +26,8 @@ public class BlindService {
         blindRepository.closeBlind();
     }
 
-    public void setOpeningTime(DtoTimeBlind dtoTimeBlind) {
+    public void setOpeningAndClosingTime(DtoTimeBlind dtoTimeBlind) {
         EntityTimeBlind entityTimeBlind = mapperTimeBlind.mapToEntityTimeBlind(dtoTimeBlind);
-        blindRepository.setOpeningTime(entityTimeBlind);
-    }
-
-    public void setClosingTime(DtoTimeBlind dtoTimeBlind) {
-        EntityTimeBlind entityTimeBlind = mapperTimeBlind.mapToEntityTimeBlind(dtoTimeBlind);
-        blindRepository.setClosingTime(entityTimeBlind);
+        blindRepository.setOpeningAndClosingTime(entityTimeBlind);
     }
 }

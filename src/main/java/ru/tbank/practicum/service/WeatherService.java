@@ -2,9 +2,7 @@ package ru.tbank.practicum.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClient;
 import ru.tbank.practicum.dto.external.DtoWeatherResponse;
 import ru.tbank.practicum.dto.internal.DtoCoordinate;
 import ru.tbank.practicum.dto.internal.DtoWeather;
@@ -16,27 +14,22 @@ import ru.tbank.practicum.repository.WeatherRepository;
 
 @Service
 public class WeatherService {
-    private final RestClient restClient;
 
     private final WeatherRepository weatherRepository;
+
+    private final WeatherClientService weatherClientService;
 
     private final MapperCoordinate mapperCoordinate;
 
     private final MapperWeather mapperWeather;
 
-    @Value("${app.cred.token}")
-    private String token;
-
-    @Value("${app.path}")
-    private String path;
-
     public WeatherService(
-            RestClient restClient,
             WeatherRepository weatherRepository,
+            WeatherClientService weatherClientService,
             MapperCoordinate mapperCoordinate,
             MapperWeather mapperWeather) {
-        this.restClient = restClient;
         this.weatherRepository = weatherRepository;
+        this.weatherClientService = weatherClientService;
         this.mapperCoordinate = mapperCoordinate;
         this.mapperWeather = mapperWeather;
     }
@@ -44,17 +37,7 @@ public class WeatherService {
     public DtoWeather getWeatherByCoordinate(DtoCoordinate dtoCoordinate) {
         EntityCoordinate entityCoordinate = mapperCoordinate.mapToEntityCoordinate(dtoCoordinate);
 
-        DtoWeatherResponse weatherResponse = restClient
-                .get()
-                .uri(uriBuilder -> uriBuilder
-                        .path(path)
-                        .queryParam("lat", entityCoordinate.lat())
-                        .queryParam("lon", entityCoordinate.lon())
-                        .queryParam("units", "metric")
-                        .queryParam("appid", token)
-                        .build())
-                .retrieve()
-                .body(DtoWeatherResponse.class);
+        DtoWeatherResponse weatherResponse = weatherClientService.getWeatherByCoordinate(entityCoordinate);
 
         weatherRepository.save(mapperWeather.mapToEntityWeather(weatherResponse));
 
