@@ -3,8 +3,8 @@ package ru.tbank.practicum.service;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
 import ru.tbank.practicum.dto.external.DtoWeatherResponse;
-import ru.tbank.practicum.entity.EntityCoordinate;
 
 @Service
 public class WeatherClientService {
@@ -21,14 +21,14 @@ public class WeatherClientService {
         this.restClient = restClient;
     }
 
-    public DtoWeatherResponse getWeatherByCoordinate(EntityCoordinate entityCoordinate) {
+    public DtoWeatherResponse getWeatherByCoordinate(DtoCoordinateRequest request) {
 
         DtoWeatherResponse weatherResponse = restClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(path)
-                        .queryParam("lat", entityCoordinate.lat())
-                        .queryParam("lon", entityCoordinate.lon())
+                        .queryParam("lat", request.lat())
+                        .queryParam("lon", request.lon())
                         .queryParam("units", "metric")
                         .queryParam("appid", token)
                         .build())
