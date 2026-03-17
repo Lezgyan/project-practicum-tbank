@@ -1,6 +1,5 @@
 package ru.tbank.practicum.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
@@ -41,10 +40,7 @@ public class WeatherService {
 
     public List<DtoWeather> getForecasts() {
         List<EntityWeather> entities = weatherRepository.getAll();
-        return new ArrayList<>(List.of(new DtoWeather(1L, 12.0, "testing")));
-        //        return entities.stream()
-        //                .map(mapperWeather::mapToDtoWeather)
-        //                .toList();
+        return entities.stream().map(mapperWeather::mapToDtoWeather).toList();
     }
 
     public DtoWeather getForecast(Long id) {

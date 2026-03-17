@@ -1,5 +1,6 @@
 package ru.tbank.practicum.entity;
 
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,12 +10,9 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-public class EntityWeather {
+public class EntityBlind {
     private Long id;
-    private Double temperature;
-    private String description;
-    private Integer pressure;
-    private Double windSpeed;
-    private Double latCoordinate;
-    private Double lonCoordinate;
+    private StateBlind state;
+    private Instant openingTime;
+    private Instant closingTime;
 }

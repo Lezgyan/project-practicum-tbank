@@ -1,10 +1,7 @@
 package ru.tbank.practicum.controller;
 
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.tbank.practicum.dto.internal.DtoTimeBlind;
 import ru.tbank.practicum.service.BlindService;
 
@@ -18,18 +15,18 @@ public class BlindController {
         this.blindService = blindService;
     }
 
-    @PostMapping("/open")
-    public void openBlind() {
-        blindService.openBlind();
+    @PostMapping("/{id}/open")
+    public void openBlind(@PathVariable Long id) {
+        blindService.openBlind(id);
     }
 
-    @PostMapping("/close")
-    public void closeBlind() {
-        blindService.closeBlind();
+    @PostMapping("/{id}/close")
+    public void closeBlind(@PathVariable Long id) {
+        blindService.closeBlind(id);
     }
 
-    @PostMapping("/setOpeningAndClosingTime")
-    public void setOpeningAndClosingTime(@Valid @RequestBody DtoTimeBlind dtoTimeBlind) {
-        blindService.setOpeningAndClosingTime(dtoTimeBlind);
+    @PostMapping("/{id}/setOpeningAndClosingTime")
+    public void setOpeningAndClosingTime(@PathVariable Long id, @Valid @RequestBody DtoTimeBlind dtoTimeBlind) {
+        blindService.setOpeningAndClosingTime(id, dtoTimeBlind);
     }
 }

@@ -23,7 +23,7 @@ public class WeatherClientService {
 
     public DtoWeatherResponse getWeatherByCoordinate(DtoCoordinateRequest request) {
 
-        DtoWeatherResponse weatherResponse = restClient
+        return restClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
                         .path(path)
@@ -34,7 +34,5 @@ public class WeatherClientService {
                         .build())
                 .retrieve()
                 .body(DtoWeatherResponse.class);
-
-        return weatherResponse;
     }
 }

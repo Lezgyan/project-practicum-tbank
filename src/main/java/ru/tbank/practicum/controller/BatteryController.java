@@ -15,23 +15,23 @@ public class BatteryController {
         this.batteryService = batteryService;
     }
 
-    @PostMapping("/increaseTemperature")
-    public void increaseTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
-        batteryService.upTemperature(dtoTemperature);
+    @PostMapping("/{id}/increaseTemperature")
+    public void increaseTemperature(@PathVariable Long id, @Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.upTemperature(id, dtoTemperature);
     }
 
-    @PostMapping("/reduceTemperature")
-    public void reduceTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
-        batteryService.downTemperature(dtoTemperature);
+    @PostMapping("/{id}/reduceTemperature")
+    public void reduceTemperature(@PathVariable Long id, @Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.downTemperature(id, dtoTemperature);
     }
 
-    @GetMapping("/getCurrentTemperature")
-    public DtoTemperature getTemperature() {
-        return batteryService.getCurrentTemperature();
+    @GetMapping("/{id}/getCurrentTemperature")
+    public DtoTemperature getTemperature(@PathVariable Long id) {
+        return batteryService.getCurrentTemperature(id);
     }
 
-    @PostMapping("/setCurrentTemperature")
-    public void setTemperature(@Valid @RequestBody DtoTemperature dtoTemperature) {
-        batteryService.setTemperature(dtoTemperature);
+    @PostMapping("/{id}/setCurrentTemperature")
+    public void setTemperature(@PathVariable Long id, @Valid @RequestBody DtoTemperature dtoTemperature) {
+        batteryService.setTemperature(id, dtoTemperature);
     }
 }

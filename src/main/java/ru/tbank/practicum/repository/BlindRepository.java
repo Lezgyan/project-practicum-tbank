@@ -1,22 +1,22 @@
 package ru.tbank.practicum.repository;
 
+import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-import ru.tbank.practicum.entity.EntityTimeBlind;
 
 @Slf4j
 @Repository
 public class BlindRepository {
 
-    public void openBlind() {
+    public void openBlind(Long id) {
         log.info("Open the blind");
     }
 
-    public void closeBlind() {
+    public void closeBlind(Long id) {
         log.info("Close blind");
     }
 
-    public void setOpeningAndClosingTime(EntityTimeBlind entityTimeBlind) {
+    public void setOpeningAndClosingTime(Long id, Instant openingTime, Instant closingTime) {
         log.info("Set opening and closing time ");
     }
 }

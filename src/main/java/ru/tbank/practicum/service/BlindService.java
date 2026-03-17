@@ -2,8 +2,6 @@ package ru.tbank.practicum.service;
 
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.internal.DtoTimeBlind;
-import ru.tbank.practicum.entity.EntityTimeBlind;
-import ru.tbank.practicum.mapper.MapperTimeBlind;
 import ru.tbank.practicum.repository.BlindRepository;
 
 @Service
@@ -11,23 +9,19 @@ public class BlindService {
 
     private final BlindRepository blindRepository;
 
-    private final MapperTimeBlind mapperTimeBlind;
-
-    public BlindService(BlindRepository blindRepository, MapperTimeBlind mapperTimeBlind) {
+    public BlindService(BlindRepository blindRepository) {
         this.blindRepository = blindRepository;
-        this.mapperTimeBlind = mapperTimeBlind;
     }
 
-    public void openBlind() {
-        blindRepository.openBlind();
+    public void openBlind(Long id) {
+        blindRepository.openBlind(id);
     }
 
-    public void closeBlind() {
-        blindRepository.closeBlind();
+    public void closeBlind(Long id) {
+        blindRepository.closeBlind(id);
     }
 
-    public void setOpeningAndClosingTime(DtoTimeBlind dtoTimeBlind) {
-        EntityTimeBlind entityTimeBlind = mapperTimeBlind.mapToEntityTimeBlind(dtoTimeBlind);
-        blindRepository.setOpeningAndClosingTime(entityTimeBlind);
+    public void setOpeningAndClosingTime(Long id, DtoTimeBlind dtoTimeBlind) {
+        blindRepository.setOpeningAndClosingTime(id, dtoTimeBlind.openingTime(), dtoTimeBlind.closingTime());
     }
 }
