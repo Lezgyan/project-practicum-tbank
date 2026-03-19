@@ -1,3 +1,11 @@
 package ru.tbank.practicum.dto.external;
 
-public record LocationData(Integer type, Integer id, String country, Long sunrise, Long sunset) {}
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record LocationData(
+        @JsonProperty("type") Integer type,
+        @JsonProperty("id") Integer id,
+        @JsonProperty("message") String message,
+        @JsonProperty("country") String countryCode,
+        @JsonProperty("sunrise") Long sunrise,
+        @JsonProperty("sunset") Long sunset) {}

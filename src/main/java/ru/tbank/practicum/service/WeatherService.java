@@ -1,6 +1,6 @@
 package ru.tbank.practicum.service;
 
-import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
 import ru.tbank.practicum.dto.external.DtoWeatherResponse;
@@ -10,7 +10,10 @@ import ru.tbank.practicum.entity.EntityWeather;
 import ru.tbank.practicum.mapper.MapperWeather;
 import ru.tbank.practicum.repository.WeatherRepository;
 
+import java.util.List;
+
 @Service
+@RequiredArgsConstructor
 public class WeatherService {
 
     private final WeatherRepository weatherRepository;
@@ -18,15 +21,6 @@ public class WeatherService {
     private final WeatherClientService weatherClientService;
 
     private final MapperWeather mapperWeather;
-
-    public WeatherService(
-            WeatherRepository weatherRepository,
-            WeatherClientService weatherClientService,
-            MapperWeather mapperWeather) {
-        this.weatherRepository = weatherRepository;
-        this.weatherClientService = weatherClientService;
-        this.mapperWeather = mapperWeather;
-    }
 
     public DtoWeather getWeatherByCoordinate(DtoCoordinate dtoCoordinate) {
         DtoCoordinateRequest request = new DtoCoordinateRequest(dtoCoordinate.lat(), dtoCoordinate.lon());

@@ -1,17 +1,15 @@
 package ru.tbank.practicum.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.internal.DtoTemperature;
 import ru.tbank.practicum.repository.BatteryRepository;
 
 @Service
+@RequiredArgsConstructor
 public class BatteryService {
 
     private final BatteryRepository batteryRepository;
-
-    public BatteryService(BatteryRepository batteryRepository) {
-        this.batteryRepository = batteryRepository;
-    }
 
     public void upTemperature(Long id, DtoTemperature dtoTemperature) {
         batteryRepository.upTemperature(id, dtoTemperature.degree());

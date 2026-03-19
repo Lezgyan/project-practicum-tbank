@@ -1,19 +1,17 @@
 package ru.tbank.practicum.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.tbank.practicum.dto.internal.DtoTemperature;
 import ru.tbank.practicum.service.BatteryService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/battery")
 public class BatteryController {
 
     private final BatteryService batteryService;
-
-    public BatteryController(BatteryService batteryService) {
-        this.batteryService = batteryService;
-    }
 
     @PostMapping("/{id}/increaseTemperature")
     public void increaseTemperature(@PathVariable Long id, @Valid @RequestBody DtoTemperature dtoTemperature) {

@@ -1,19 +1,17 @@
 package ru.tbank.practicum.controller;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.tbank.practicum.dto.internal.DtoTimeBlind;
 import ru.tbank.practicum.service.BlindService;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/blind")
 public class BlindController {
 
     private final BlindService blindService;
-
-    public BlindController(BlindService blindService) {
-        this.blindService = blindService;
-    }
 
     @PostMapping("/{id}/open")
     public void openBlind(@PathVariable Long id) {

@@ -1,18 +1,18 @@
 package ru.tbank.practicum.config;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
 
 @Configuration
+@RequiredArgsConstructor
 public class AppСonfig {
 
-    @Value("${app.baseUrl}")
-    private String baseUrl;
+    private final WeatherServiceProperties weatherServiceProperties;
 
     @Bean
     public RestClient restClient() {
-        return RestClient.builder().baseUrl(baseUrl).build();
+        return RestClient.builder().baseUrl(weatherServiceProperties.baseUrl()).build();
     }
 }

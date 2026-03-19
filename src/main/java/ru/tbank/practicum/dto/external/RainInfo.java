@@ -1,0 +1,5 @@
+package ru.tbank.practicum.dto.external;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public record RainInfo(@JsonProperty("1h") Double oneHourPrecipitation) {}

@@ -1,10 +1,11 @@
 package ru.tbank.practicum.repository;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.tbank.practicum.entity.EntityWeather;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @Repository

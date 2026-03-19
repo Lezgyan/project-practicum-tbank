@@ -1,10 +1,12 @@
 app:
-  cred:
-    token: ""
-  scheduler:
-    rate: 100000
-  path: "/data/2.5/weather"
-  baseUrl: "https://api.openweathermap.org"
-  # Saratov
-  baseCoordinateLat: 51.32
-  baseCoordinateLon: 46.0
+  -weather-service:
+    -cred:
+      -token: ""
+    -current-weather-endpoint: "/data/2.5/weather"
+    -baseUrl: "https://api.openweathermap.org"
+    # Saratov
+    -coordinate:
+      -lon: 46.0
+      -lat: 51.32
+    -scheduler:
+      -rate: 100000
