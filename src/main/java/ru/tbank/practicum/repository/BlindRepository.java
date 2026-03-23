@@ -1,9 +1,8 @@
 package ru.tbank.practicum.repository;
 
+import java.time.Instant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
-
-import java.time.Instant;
 
 @Slf4j
 @Repository

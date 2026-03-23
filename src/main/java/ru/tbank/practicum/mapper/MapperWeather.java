@@ -1,5 +1,6 @@
 package ru.tbank.practicum.mapper;
 
+import java.util.List;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -7,8 +8,6 @@ import ru.tbank.practicum.dto.external.DtoWeatherResponse;
 import ru.tbank.practicum.dto.external.WeatherCondition;
 import ru.tbank.practicum.dto.internal.DtoWeather;
 import ru.tbank.practicum.entity.EntityWeather;
-
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface MapperWeather {

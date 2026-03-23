@@ -1,9 +1,8 @@
 package ru.tbank.practicum.dto.internal;
 
 import jakarta.validation.constraints.NotNull;
-import ru.tbank.practicum.validation.LessThan;
-
 import java.time.Instant;
+import ru.tbank.practicum.validation.LessThan;
 
 @LessThan(less = "openingTime", more = "closingTime")
 public record DtoTimeBlind(

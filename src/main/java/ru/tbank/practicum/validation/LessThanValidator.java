@@ -2,7 +2,6 @@ package ru.tbank.practicum.validation;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.lang.reflect.Field;
 
 public class LessThanValidator implements ConstraintValidator<LessThan, Object> {

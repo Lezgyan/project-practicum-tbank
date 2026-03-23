@@ -1,13 +1,12 @@
 package ru.tbank.practicum.controller;
 
 import jakarta.validation.Valid;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.tbank.practicum.dto.internal.DtoCoordinate;
 import ru.tbank.practicum.dto.internal.DtoWeather;
 import ru.tbank.practicum.service.WeatherService;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor

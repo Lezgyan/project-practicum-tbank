@@ -1,7 +1,6 @@
 package ru.tbank.practicum.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.List;
 
 public record DtoWeatherResponse(

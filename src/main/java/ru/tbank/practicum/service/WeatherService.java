@@ -1,5 +1,6 @@
 package ru.tbank.practicum.service;
 
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
@@ -9,8 +10,6 @@ import ru.tbank.practicum.dto.internal.DtoWeather;
 import ru.tbank.practicum.entity.EntityWeather;
 import ru.tbank.practicum.mapper.MapperWeather;
 import ru.tbank.practicum.repository.WeatherRepository;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
