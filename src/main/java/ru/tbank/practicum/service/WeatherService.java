@@ -1,47 +1,56 @@
 package ru.tbank.practicum.service;
 
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
 import ru.tbank.practicum.dto.external.DtoWeatherResponse;
-import ru.tbank.practicum.dto.internal.DtoCoordinate;
-import ru.tbank.practicum.dto.internal.DtoWeather;
-import ru.tbank.practicum.entity.EntityWeather;
+import ru.tbank.practicum.entity.Room;
+import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.mapper.MapperWeather;
-import ru.tbank.practicum.repository.WeatherRepository;
+import ru.tbank.practicum.repository.RoomRepository;
 
 @Service
 @RequiredArgsConstructor
 public class WeatherService {
 
-    private final WeatherRepository weatherRepository;
-
-    private final WeatherClientService weatherClientService;
-
+    private final WeatherClientService weatherClient;
+    private final RoomRepository roomRepository;
     private final MapperWeather mapperWeather;
 
-    public DtoWeather getWeatherByCoordinate(DtoCoordinate dtoCoordinate) {
-        DtoCoordinateRequest request = new DtoCoordinateRequest(dtoCoordinate.lat(), dtoCoordinate.lon());
+    public void processRooms() {
+        List<Room> roomList = roomRepository.findAll();
 
-        DtoWeatherResponse weatherResponse = weatherClientService.getWeatherByCoordinate(request);
+        for (Room room : roomList) {
 
-        weatherRepository.save(mapperWeather.mapToEntityWeather(weatherResponse));
+            DtoWeatherResponse dtoWeatherResponse = getWeather(room);
 
-        return mapperWeather.mapToDtoWeather(weatherResponse);
+            if (room.getWeather() == null) {
+                room.setWeather(mapperWeather.mapToEntityWeather(dtoWeatherResponse));
+            } else {
+                mapperWeather.updateEntityWeather(room.getWeather(), dtoWeatherResponse);
+            }
+
+            roomRepository.save(room);
+        }
     }
 
-    public List<DtoWeather> getForecasts() {
-        List<EntityWeather> entities = weatherRepository.getAll();
-        return entities.stream().map(mapperWeather::mapToDtoWeather).toList();
+    private DtoWeatherResponse getWeather(Room room) {
+
+        DtoCoordinateRequest request = new DtoCoordinateRequest(room.getLat(), room.getLon());
+
+        DtoWeatherResponse response = weatherClient.getWeatherByCoordinate(request);
+
+        if (response == null || response.main() == null) {
+            throw new IllegalStateException("Weather API returned empty response");
+        }
+
+        return response;
     }
 
-    public DtoWeather getForecast(Long id) {
-        EntityWeather entity = weatherRepository.getById(id);
-        return mapperWeather.mapToDtoWeather(entity);
-    }
-
-    public void deleteForecast(Long id) {
-        weatherRepository.deleteById(id);
+    public WeatherMeasurement getWeatherByRoomId(Long id) {
+        Optional<Room> room = roomRepository.findById(id);
+        return room.map(Room::getWeather).orElse(null);
     }
 }

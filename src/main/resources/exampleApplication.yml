@@ -1,12 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5434/smarthouse
+    username: postgres
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  liquibase:
+    changelog: classpath:/db\changelog\db.changelog-master.yml
+    enabled: true
 app:
-  -weather-service:
-    -cred:
-      -token: ""
-    -current-weather-endpoint: "/data/2.5/weather"
-    -baseUrl: "https://api.openweathermap.org"
+
+  house-rules:
+    rate: "0 * * * * *"
+  weather-service:
+    cred:
+      token: ""
+    current-weather-endpoint: "/data/2.5/weather"
+    baseUrl: "https://api.openweathermap.org"
     # Saratov
-    -coordinate:
-      -lon: 46.0
-      -lat: 51.32
-    -scheduler:
-      -rate: 100000
+    coordinate:
+      lon: 46.0
+      lat: 51.32
+    scheduler:
+      rate: 600000

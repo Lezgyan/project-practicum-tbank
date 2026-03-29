@@ -3,6 +3,7 @@ package ru.tbank.practicum.validation;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 import java.lang.annotation.ElementType;
+import java.lang.annotation.Repeatable;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
@@ -10,6 +11,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = LessThanValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
+@Repeatable(LessThan.List.class)
 public @interface LessThan {
 
     String less();
@@ -21,4 +23,10 @@ public @interface LessThan {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    @Target(ElementType.TYPE)
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface List {
+        LessThan[] value();
+    }
 }
