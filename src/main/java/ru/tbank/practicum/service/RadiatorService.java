@@ -46,12 +46,6 @@ public class RadiatorService implements DeviceService {
 
             if (!isRadiatorAlready(device, settings.getRadiatorTempWhenCold())) {
                 // SENT KAFKA
-
-                //                deviceCommandService.setRadiatorTemperature(
-                //                        device.getId(),
-                //                        settings.getRadiatorTempWhenCold(),
-                //                        "AUTO_COLD_WEATHER"
-                //                );
                 log.info("Auto radiator cold rule: {}", device.getExternalId());
             }
             return;
@@ -62,14 +56,7 @@ public class RadiatorService implements DeviceService {
                 && outsideTemp.compareTo(settings.getHotWeatherTemperature()) >= 0) {
 
             if (!isRadiatorAlready(device, settings.getRadiatorTempWhenHot())) {
-
                 // SENT KAFKA
-
-                //                deviceCommandService.setRadiatorTemperature(
-                //                        device.getId(),
-                //                        settings.getRadiatorTempWhenHot(),
-                //                        "AUTO_HOT_WEATHER"
-                //                );
                 log.info("Auto radiator hot rule: {}", device.getExternalId());
             }
         }

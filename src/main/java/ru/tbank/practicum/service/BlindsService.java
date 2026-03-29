@@ -39,8 +39,6 @@ public class BlindsService implements DeviceService {
         if (settings.getBlindsOpenTime() != null && now.equals(settings.getBlindsOpenTime())) {
             if (!isBlindsAlready(device, true)) {
                 // SENT KAFKA
-
-                // deviceCommandService.setBlinds(device.getId(), true, "AUTO_TIME_OPEN");
                 log.info("Auto open blinds: {}", device.getExternalId());
             }
         }
@@ -49,7 +47,6 @@ public class BlindsService implements DeviceService {
             if (!isBlindsAlready(device, false)) {
                 // SENT KAFKA
 
-                // deviceCommandService.setBlinds(device.getId(), false, "AUTO_TIME_CLOSE");
                 log.info("Auto close blinds: {}", device.getExternalId());
             }
         }
@@ -71,8 +68,6 @@ public class BlindsService implements DeviceService {
 
         if ((brightSun || hot) && !isBlindsAlready(device, false)) {
             // SENT KAFKA
-
-            //            deviceCommandService.setBlinds(device.getId(), false, "AUTO_BRIGHT_SUN");
             log.info("Auto close blinds because of weather: {}", device.getExternalId());
         }
     }
