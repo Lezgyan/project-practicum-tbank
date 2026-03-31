@@ -13,6 +13,10 @@ public class ScheduledWeather {
 
     @Scheduled(fixedRateString = "${app.weather-service.scheduler.rate}")
     private void reportCurrentWeather() {
-        weatherService.processRooms();
+        try {
+            weatherService.processRooms();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -69,8 +69,8 @@ public class RadiatorService implements DeviceService {
             return false;
         }
 
-        Double state = ((RadiatorStatePayload) deviceState.getDeviceStatePayload()).getTemperature();
+        double state = ((RadiatorStatePayload) deviceState.getDeviceStatePayload()).getTemperature();
 
-        return state != null && state.compareTo(desiredTemp) == 0;
+        return Double.compare(state, desiredTemp) == 0;
     }
 }

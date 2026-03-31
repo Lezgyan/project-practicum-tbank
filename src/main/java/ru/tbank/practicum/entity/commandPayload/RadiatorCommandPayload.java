@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RadiatorCommandPayload implements DeviceCommandPayload {
-    private Double targetTemperature;
+    private double targetTemperature;
     private String reason;
 }

@@ -5,6 +5,6 @@ import ru.tbank.practicum.enums.DeviceStatus;
 import ru.tbank.practicum.enums.DeviceType;
 
 public record DtoCreateDevice(
-        @NotNull(message = "name is null") String name,
-        @NotNull(message = "type is null") DeviceType type,
-        @NotNull(message = "status is null") DeviceStatus status) {}
+        @NotNull String name,
+        @NotNull DeviceType type,
+        @NotNull DeviceStatus status) {}

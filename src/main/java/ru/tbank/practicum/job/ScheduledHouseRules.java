@@ -13,6 +13,10 @@ public class ScheduledHouseRules {
 
     @Scheduled(cron = "${app.house-rules.rate}")
     private void checkHouseRules() {
-        automationService.process();
+        try {
+            automationService.process();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

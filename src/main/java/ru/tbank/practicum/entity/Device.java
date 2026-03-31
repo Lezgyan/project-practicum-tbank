@@ -57,7 +57,7 @@ public class Device {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "room_id")
     private Room room;
 

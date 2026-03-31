@@ -11,9 +11,6 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("""
             SELECT r FROM Room r
             JOIN FETCH r.devices d
-            JOIN FETCH r.weather
-            JOIN FETCH d.deviceState
-            JOIN FETCH d.settings
             """)
     List<Room> getRooms();
 }

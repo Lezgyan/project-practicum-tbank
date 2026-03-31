@@ -1,7 +1,7 @@
 package ru.tbank.practicum.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
@@ -50,7 +50,9 @@ public class WeatherService {
     }
 
     public WeatherMeasurement getWeatherByRoomId(Long id) {
-        Optional<Room> room = roomRepository.findById(id);
-        return room.map(Room::getWeather).orElse(null);
+
+        Room room = roomRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Room not found: " + id));
+
+        return room.getWeather();
     }
 }

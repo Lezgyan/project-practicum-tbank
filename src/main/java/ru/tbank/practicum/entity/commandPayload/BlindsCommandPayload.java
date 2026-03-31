@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlindsCommandPayload implements DeviceCommandPayload {
-    private Boolean open;
+    private boolean open;
     private String reason;
 }

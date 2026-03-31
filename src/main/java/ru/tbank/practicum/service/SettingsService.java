@@ -5,16 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbank.practicum.dto.internal.UpdateDeviceSettingsRequest;
 import ru.tbank.practicum.dto.internal.UpdateDeviceSettingsResponse;
-import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.mapper.MapperDeviceSettings;
-import ru.tbank.practicum.repository.DeviceRepository;
 import ru.tbank.practicum.repository.DeviceSettingsRepository;
 
 @Service
 @RequiredArgsConstructor
 public class SettingsService {
-    private final DeviceRepository deviceRepository;
 
     private final DeviceSettingsRepository deviceSettingsRepository;
 
@@ -26,15 +23,11 @@ public class SettingsService {
 
         DeviceSettings patch = mapperDeviceSettings.toDeviceSettings(updateDeviceSettingsRequest);
 
-        Device device = deviceRepository
-                .findById(deviceId)
-                .orElseThrow(() -> new IllegalArgumentException("Device not found: " + deviceId));
+        DeviceSettings deviceSettings = deviceSettingsRepository.findByDeviceId(deviceId);
 
-        DeviceSettings settings = device.getSettings();
+        mapperDeviceSettings.updateDeviceSettingsFromRequest(patch, deviceSettings);
 
-        mapperDeviceSettings.updateDeviceSettingsFromRequest(patch, settings);
-
-        DeviceSettings newDeviceSettings = deviceSettingsRepository.save(settings);
+        DeviceSettings newDeviceSettings = deviceSettingsRepository.save(deviceSettings);
 
         return mapperDeviceSettings.toDeviceSettingsResponse(newDeviceSettings);
     }

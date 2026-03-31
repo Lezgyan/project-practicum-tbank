@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RadiatorStateChangedEventPayload implements DeviceEventPayload {
-    private Double temperature;
+    private double temperature;
 }

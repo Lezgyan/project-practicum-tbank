@@ -1,5 +1,6 @@
 package ru.tbank.practicum.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -31,10 +32,10 @@ public class RoomService {
     public void addDevice(Long roomId, Long deviceId) {
         Room room = roomRepository
                 .findById(roomId)
-                .orElseThrow(() -> new IllegalArgumentException("Room not found: " + roomId));
+                .orElseThrow(() -> new EntityNotFoundException("Room not found: " + roomId));
         Device device = deviceRepository
                 .findById(deviceId)
-                .orElseThrow(() -> new IllegalArgumentException("Device not found: " + deviceId));
+                .orElseThrow(() -> new EntityNotFoundException("Device not found: " + deviceId));
 
         room.addDevice(device);
     }

@@ -1,3 +1,3 @@
 package ru.tbank.practicum.dto.internal;
 
-public record DtoCreateRoomResponse(Long roomId) {}
+public record DtoCreateRoomResponse(long roomId) {}

@@ -79,8 +79,8 @@ public class BlindsService implements DeviceService {
             return false;
         }
 
-        Boolean state = ((BlindsStatePayload) deviceState.getDeviceStatePayload()).getOpen();
+        boolean state = ((BlindsStatePayload) deviceState.getDeviceStatePayload()).isOpen();
 
-        return state != null && state.equals(desiredOpen);
+        return state == desiredOpen;
     }
 }

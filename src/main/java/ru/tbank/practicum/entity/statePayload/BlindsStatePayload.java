@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlindsStatePayload implements DeviceStatePayload {
-    private Boolean open;
+    private boolean open;
 }

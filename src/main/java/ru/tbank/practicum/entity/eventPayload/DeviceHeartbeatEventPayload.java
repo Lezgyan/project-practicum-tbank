@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeviceHeartbeatEventPayload implements DeviceEventPayload {
-    private Long timestamp;
+    private long timestamp;
 }

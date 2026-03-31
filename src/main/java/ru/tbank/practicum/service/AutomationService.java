@@ -18,6 +18,7 @@ public class AutomationService {
     private final List<DeviceService> deviceServiceList;
 
     public void process() {
+
         List<Room> rooms = roomRepository.getRooms();
 
         for (Room room : rooms) {
