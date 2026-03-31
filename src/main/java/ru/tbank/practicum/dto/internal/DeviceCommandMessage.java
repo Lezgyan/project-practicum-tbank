@@ -5,7 +5,7 @@ import ru.tbank.practicum.entity.commandPayload.DeviceCommandPayload;
 import ru.tbank.practicum.enums.DeviceType;
 
 public record DeviceCommandMessage(
-        Long deviceId,
+        long deviceId,
         String externalId,
         DeviceType deviceType,
         String commandType,

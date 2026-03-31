@@ -1,3 +1,5 @@
 package ru.tbank.practicum.dto.internal;
 
-public record SetRadiatorTemperatureRequest(Double temperature) {}
+import jakarta.validation.constraints.NotNull;
+
+public record SetRadiatorTemperatureRequest(@NotNull Double temperature) {}

@@ -8,6 +8,6 @@ public record DeviceEventMessage(
         String externalId,
         EventType eventType,
         DeviceEventPayload payload,
-        Boolean hasError,
+        boolean hasError,
         String errorMessage,
         Instant createdAt) {}
