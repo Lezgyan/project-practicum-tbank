@@ -2,19 +2,19 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5434/smarthouse
     username: postgres
-    password:
+    password: postgres
   jpa:
     hibernate:
       ddl-auto: validate
     properties:
       hibernate:
-        format_sql: true
-    show-sql: true
+        format_sql: false
+    show-sql: false
   liquibase:
-    changelog: classpath:/db\changelog\db.changelog-master.yml
-    enabled: true
-app:
+    enabled: false
 
+
+app:
   house-rules:
     rate: "0 * * * * *"
   weather-service:

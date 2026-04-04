@@ -1,9 +1,9 @@
 version: '3.9'
 
 services:
-  postgres:
+  db:
     image: postgres:16
-    container_name: postgres-local
+    container_name: smarthouse-db
     restart: always
     environment:
       POSTGRES_DB: smarthouse
@@ -13,6 +13,45 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d smarthouse" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile.migrations
+    container_name: smarthouse-migrate
+    depends_on:
+      db:
+        condition: service_healthy
+    command:
+      - --url=jdbc:postgresql://db:5432/smarthouse
+      - --username=postgres
+      - --password=
+      - --changelog-file=changelog/db.changelog-master.yml
+      - update
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: smart-house-app
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/smarthouse
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD:
+      SPRING_LIQUIBASE_ENABLED: "false"
+    ports:
+      - "8080:8080"
+
+
 
 volumes:
   postgres_data:
