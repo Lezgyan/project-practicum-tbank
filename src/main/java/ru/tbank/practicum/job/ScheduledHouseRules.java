@@ -3,18 +3,18 @@ package ru.tbank.practicum.job;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import ru.tbank.practicum.service.WeatherService;
+import ru.tbank.practicum.service.AutomationService;
 
 @RequiredArgsConstructor
 @Component
-public class ScheduledWeather {
+public class ScheduledHouseRules {
 
-    private final WeatherService weatherService;
+    private final AutomationService automationService;
 
-    @Scheduled(fixedRateString = "${app.weather-service.scheduler.rate}")
-    private void reportCurrentWeather() {
+    @Scheduled(cron = "${app.house-rules.rate}")
+    private void checkHouseRules() {
         try {
-            weatherService.processRooms();
+            automationService.process();
         } catch (Exception e) {
             e.printStackTrace();
         }
