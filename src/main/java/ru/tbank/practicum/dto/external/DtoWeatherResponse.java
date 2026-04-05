@@ -2,7 +2,9 @@ package ru.tbank.practicum.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
+import lombok.Builder;
 
+@Builder
 public record DtoWeatherResponse(
         @JsonProperty("coord") Coordinates coordinates,
         @JsonProperty("weather") List<WeatherCondition> weatherCondition,
