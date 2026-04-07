@@ -45,3 +45,4 @@ bin/
 
 ## My blocks ##
 application.yml
+.env
