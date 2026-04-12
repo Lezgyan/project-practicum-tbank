@@ -45,7 +45,8 @@ class RoomServiceTestcontainersTest {
 
         roomService.addDevice(dtoCreateRoomResponse.roomId(), dtoCreateDeviceResponse.deviceId());
 
-        Room actualRoom = roomRepository.findById(dtoCreateRoomResponse.roomId()).orElseThrow();
+        Room actualRoom =
+                roomRepository.findById(dtoCreateRoomResponse.roomId()).orElseThrow();
 
         assertThat(actualRoom.getDevices())
                 .anyMatch(savedDevice -> savedDevice.getId().equals(dtoCreateDeviceResponse.deviceId()));

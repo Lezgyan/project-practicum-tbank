@@ -5,6 +5,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -30,6 +31,11 @@ class AutomationServiceTest {
     @InjectMocks
     private AutomationService automationService;
 
+    @BeforeEach
+    public void createAutomationService() {
+        automationService = new AutomationService(roomRepository, List.of(deviceService1, deviceService2));
+    }
+
     @Test
     void process_deviceStateHasNoError_appliesAllDeviceServices() {
         Device device = new Device();
@@ -41,8 +47,6 @@ class AutomationServiceTest {
         room.setDevices(List.of(device));
 
         when(roomRepository.getRooms()).thenReturn(List.of(room));
-
-        automationService = new AutomationService(roomRepository, List.of(deviceService1, deviceService2));
 
         automationService.process();
 

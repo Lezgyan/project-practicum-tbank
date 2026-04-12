@@ -44,5 +44,5 @@ bin/
 .DS_Store
 
 ## My blocks ##
-application.yml
+src/main/resources/application.yml
 .env

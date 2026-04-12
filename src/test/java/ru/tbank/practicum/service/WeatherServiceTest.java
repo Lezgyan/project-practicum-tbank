@@ -2,6 +2,7 @@ package ru.tbank.practicum.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -113,7 +114,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getWeatherByRoomId_existingRoom_returnsRoomWeather() {
+    void getWeatherByRoomId_roomDoesNotExist_throwsEntityNotFoundException() {
         Long roomId = 1L;
 
         when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
@@ -124,7 +125,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getWeatherByRoomId_roomDoesNotExist_throwsEntityNotFoundException() {
+    void getWeatherByRoomId_existingRoom_returnsRoomWeather() {
         Room room = new Room();
         room.setLat(10.0);
         room.setLon(20.0);
@@ -141,8 +142,8 @@ class WeatherServiceTest {
         ArgumentCaptor<DtoCoordinateRequest> captor = ArgumentCaptor.forClass(DtoCoordinateRequest.class);
         verify(weatherClient, times(1)).getWeatherByCoordinate(captor.capture());
 
-        assertThat(captor.getValue().lat()).isEqualTo(10.0);
-        assertThat(captor.getValue().lon()).isEqualTo(20.0);
+        assertEquals(10.0, captor.getValue().lat());
+        assertEquals(20.0, captor.getValue().lon());
     }
 
     private DtoWeatherResponse createWeatherResponse() {

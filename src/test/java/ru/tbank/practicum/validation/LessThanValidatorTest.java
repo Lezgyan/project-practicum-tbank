@@ -1,7 +1,8 @@
 package ru.tbank.practicum.validation;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -44,7 +45,7 @@ class LessThanValidatorTest {
     void isValid_valueIsNull_returnsTrue() {
         boolean result = validator.isValid(null, context);
 
-        assertThat(result).isTrue();
+        assertTrue(result);
     }
 
     @Test
@@ -53,7 +54,7 @@ class LessThanValidatorTest {
 
         boolean result = validator.isValid(value, context);
 
-        assertThat(result).isTrue();
+        assertTrue(result);
     }
 
     @Test
@@ -66,7 +67,7 @@ class LessThanValidatorTest {
 
         boolean result = validator.isValid(value, context);
 
-        assertThat(result).isFalse();
+        assertFalse(result);
     }
 
     @Test
@@ -79,7 +80,7 @@ class LessThanValidatorTest {
 
         boolean result = validator.isValid(value, context);
 
-        assertThat(result).isFalse();
+        assertFalse(result);
     }
 
     @Test
@@ -88,7 +89,7 @@ class LessThanValidatorTest {
 
         boolean result = validator.isValid(value, context);
 
-        assertThat(result).isTrue();
+        assertTrue(result);
         verify(context, never()).disableDefaultConstraintViolation();
     }
 
@@ -98,7 +99,7 @@ class LessThanValidatorTest {
 
         boolean result = validator.isValid(value, context);
 
-        assertThat(result).isTrue();
+        assertTrue(result);
         verify(context, never()).disableDefaultConstraintViolation();
     }
 

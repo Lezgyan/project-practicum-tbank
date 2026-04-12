@@ -1,6 +1,10 @@
 package ru.tbank.practicum.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
 import java.time.OffsetDateTime;
@@ -37,19 +41,24 @@ class MapperWeatherTest {
 
         WeatherMeasurement result = mapperWeather.mapToEntityWeather(dtoWeatherResponse);
 
-        assertThat(result.getId()).isNull();
-        assertThat(result.getTemperature()).isEqualTo(1.);
-        assertThat(result.getFeelsLike()).isEqualTo(2.0);
-        assertThat(result.getHumidity()).isEqualTo(3);
-        assertThat(result.getPressure()).isEqualTo(4);
-        assertThat(result.getWindSpeed()).isEqualTo(5.0);
-        assertThat(result.getCloudiness()).isEqualTo(6);
-        assertThat(result.getIsRaining()).isTrue();
-        assertThat(result.getIsSnowing()).isFalse();
-        assertThat(result.getWeatherMain()).isEqualTo("Rain");
-        assertThat(result.getWeatherDescription()).isEqualTo("light rain");
-        assertThat(result.getMeasuredAt())
-                .isEqualTo(OffsetDateTime.ofInstant(Instant.ofEpochSecond(88005553535L), ZoneOffset.UTC));
+        assertNull(result.getId());
+
+        assertEquals(1., result.getTemperature());
+        assertEquals(2.0, result.getFeelsLike());
+        assertEquals(3, result.getHumidity());
+        assertEquals(4, result.getPressure());
+        assertEquals(5.0, result.getWindSpeed());
+        assertEquals(6, result.getCloudiness());
+
+        assertTrue(result.getIsRaining());
+        assertFalse(result.getIsSnowing());
+
+        assertEquals("Rain", result.getWeatherMain());
+
+        assertEquals("light rain", result.getWeatherDescription());
+
+        assertEquals(
+                OffsetDateTime.ofInstant(Instant.ofEpochSecond(88005553535L), ZoneOffset.UTC), result.getMeasuredAt());
     }
 
     @Test
@@ -72,47 +81,48 @@ class MapperWeatherTest {
         WeatherMeasurement result = mapperWeather.updateEntityWeather(entityWeather, dtoWeatherResponse);
 
         assertThat(result).isSameAs(entityWeather);
-        assertThat(result.getId()).isEqualTo(100L);
-        assertThat(result.getTemperature()).isEqualTo(10.0);
-        assertThat(result.getFeelsLike()).isEqualTo(11.0);
-        assertThat(result.getHumidity()).isEqualTo(12);
-        assertThat(result.getPressure()).isEqualTo(13);
-        assertThat(result.getWindSpeed()).isEqualTo(14.0);
-        assertThat(result.getCloudiness()).isEqualTo(15);
-        assertThat(result.getIsRaining()).isFalse();
-        assertThat(result.getIsSnowing()).isTrue();
-        assertThat(result.getWeatherMain()).isEqualTo("Clear");
-        assertThat(result.getWeatherDescription()).isEqualTo("clear sky");
-        assertThat(result.getMeasuredAt())
-                .isEqualTo(OffsetDateTime.ofInstant(Instant.ofEpochSecond(111L), ZoneOffset.UTC));
+
+        assertEquals(100L, result.getId());
+        assertEquals(10.0, result.getTemperature());
+        assertEquals(11.0, result.getFeelsLike());
+        assertEquals(12, result.getHumidity());
+        assertEquals(13, result.getPressure());
+        assertEquals(14.0, result.getWindSpeed());
+        assertEquals(15, result.getCloudiness());
+
+        assertFalse(result.getIsRaining());
+        assertTrue(result.getIsSnowing());
+        assertEquals("Clear", result.getWeatherMain());
+        assertEquals("clear sky", result.getWeatherDescription());
+        assertEquals(OffsetDateTime.ofInstant(Instant.ofEpochSecond(111L), ZoneOffset.UTC), result.getMeasuredAt());
     }
 
     @Test
     void isRainingOrSnowing_precipitationIsGreaterThanZero_returnsTrue() {
         Boolean result = mapperWeather.isRainingOrSnowing(0.5);
 
-        assertThat(result).isTrue();
+        assertTrue(result);
     }
 
     @Test
     void isRainingOrSnowing_precipitationIsZero_returnsFalse() {
         Boolean result = mapperWeather.isRainingOrSnowing(0.0);
 
-        assertThat(result).isFalse();
+        assertFalse(result);
     }
 
     @Test
     void isRainingOrSnowing_precipitationIsNull_returnsFalse() {
         Boolean result = mapperWeather.isRainingOrSnowing(null);
 
-        assertThat(result).isFalse();
+        assertFalse(result);
     }
 
     @Test
     void toOffsetDateTime_validTimestamp_returnsUtcOffsetDateTime() {
         OffsetDateTime result = mapperWeather.toOffsetDateTime(1_700_000_000L);
 
-        assertThat(result).isEqualTo(OffsetDateTime.ofInstant(Instant.ofEpochSecond(1_700_000_000L), ZoneOffset.UTC));
+        assertEquals(OffsetDateTime.ofInstant(Instant.ofEpochSecond(1_700_000_000L), ZoneOffset.UTC), result);
     }
 
     @Test
@@ -120,21 +130,21 @@ class MapperWeatherTest {
         String result = mapperWeather.firstConditionGroup(
                 List.of(new WeatherCondition(801, "Clouds", "overcast clouds", "04d")));
 
-        assertThat(result).isEqualTo("Clouds");
+        assertEquals("Clouds", result);
     }
 
     @Test
     void firstConditionGroup_weatherConditionListIsNull_returnsNull() {
         String result = mapperWeather.firstConditionGroup(null);
 
-        assertThat(result).isNull();
+        assertNull(result);
     }
 
     @Test
     void firstConditionGroup_weatherConditionListIsEmpty_returnsNull() {
         String result = mapperWeather.firstConditionGroup(List.of());
 
-        assertThat(result).isNull();
+        assertNull(result);
     }
 
     @Test
@@ -142,21 +152,21 @@ class MapperWeatherTest {
         String result =
                 mapperWeather.firstDescription(List.of(new WeatherCondition(803, "Clouds", "broken clouds", "04d")));
 
-        assertThat(result).isEqualTo("broken clouds");
+        assertEquals("broken clouds", result);
     }
 
     @Test
     void firstDescription_weatherConditionListIsNull_returnsNull() {
         String result = mapperWeather.firstDescription(null);
 
-        assertThat(result).isNull();
+        assertNull(result);
     }
 
     @Test
     void firstDescription_weatherConditionListIsEmpty_returnsNull() {
         String result = mapperWeather.firstDescription(List.of());
 
-        assertThat(result).isNull();
+        assertNull(result);
     }
 
     private DtoWeatherResponse weatherResponse(

@@ -2,7 +2,7 @@ spring:
   datasource:
     url: jdbc:tc:postgresql:16:///test_db
     username: test
-    password:
+    password: test
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,7 +19,7 @@ app:
     rate: "0 * * * * *"
   weather-service:
     cred:
-      token: ""
+      token: "test-token"
     current-weather-endpoint: "/data/2.5/weather"
     baseUrl: "https://api.openweathermap.org"
     # Saratov

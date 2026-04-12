@@ -1,6 +1,7 @@
 package ru.tbank.practicum.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,7 +52,8 @@ class DeviceDbServiceTest {
 
         assertThat(result).isSameAs(response);
         assertThat(device.getSettings()).isNotNull().isInstanceOf(DeviceSettings.class);
-        assertThat(device.getExternalId()).isNotNull();
+        assertNotNull(device.getExternalId());
+
         assertThat(device.getDeviceState()).isNotNull().isInstanceOf(DeviceState.class);
         assertThat(device.getDeviceState().getDeviceStatePayload()).isInstanceOf(RadiatorStatePayload.class);
 
@@ -74,9 +76,9 @@ class DeviceDbServiceTest {
 
         deviceDbService.createDevice(request);
 
-        assertThat(device.getSettings()).isNotNull();
-        assertThat(device.getExternalId()).isNotNull();
-        assertThat(device.getDeviceState()).isNotNull();
+        assertNotNull(device.getSettings());
+        assertNotNull(device.getExternalId());
+        assertNotNull(device.getDeviceState());
         assertThat(device.getDeviceState().getDeviceStatePayload()).isInstanceOf(BlindsStatePayload.class);
     }
 }

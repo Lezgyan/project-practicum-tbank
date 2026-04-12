@@ -3,9 +3,6 @@ package ru.tbank.practicum.repository;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
-
-import jakarta.validation.constraints.NotNull;
-import org.jspecify.annotations.NullMarked;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.tbank.practicum.entity.Room;
