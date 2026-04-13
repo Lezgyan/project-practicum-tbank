@@ -26,7 +26,7 @@ class MapperWeatherTest {
     private final MapperWeather mapperWeather = Mappers.getMapper(MapperWeather.class);
 
     @Test
-    void mapToEntityWeather_validDto_mapsAllFieldsToNewEntity() {
+    public void mapToEntityWeather_validDto_mapsAllFieldsToNewEntity() {
         DtoWeatherResponse dtoWeatherResponse = weatherResponse(
                 1.0,
                 2.0,
@@ -62,7 +62,7 @@ class MapperWeatherTest {
     }
 
     @Test
-    void updateEntityWeather_validDto_updatesExistingEntityAndKeepsId() {
+    public void updateEntityWeather_validDto_updatesExistingEntityAndKeepsId() {
         WeatherMeasurement entityWeather = new WeatherMeasurement();
         entityWeather.setId(100L);
 
@@ -98,35 +98,35 @@ class MapperWeatherTest {
     }
 
     @Test
-    void isRainingOrSnowing_precipitationIsGreaterThanZero_returnsTrue() {
+    public void isRainingOrSnowing_precipitationIsGreaterThanZero_returnsTrue() {
         Boolean result = mapperWeather.isRainingOrSnowing(0.5);
 
         assertTrue(result);
     }
 
     @Test
-    void isRainingOrSnowing_precipitationIsZero_returnsFalse() {
+    public void isRainingOrSnowing_precipitationIsZero_returnsFalse() {
         Boolean result = mapperWeather.isRainingOrSnowing(0.0);
 
         assertFalse(result);
     }
 
     @Test
-    void isRainingOrSnowing_precipitationIsNull_returnsFalse() {
+    public void isRainingOrSnowing_precipitationIsNull_returnsFalse() {
         Boolean result = mapperWeather.isRainingOrSnowing(null);
 
         assertFalse(result);
     }
 
     @Test
-    void toOffsetDateTime_validTimestamp_returnsUtcOffsetDateTime() {
+    public void toOffsetDateTime_validTimestamp_returnsUtcOffsetDateTime() {
         OffsetDateTime result = mapperWeather.toOffsetDateTime(1_700_000_000L);
 
         assertEquals(OffsetDateTime.ofInstant(Instant.ofEpochSecond(1_700_000_000L), ZoneOffset.UTC), result);
     }
 
     @Test
-    void firstConditionGroup_weatherConditionListHasFirstElement_returnsFirstConditionGroup() {
+    public void firstConditionGroup_weatherConditionListHasFirstElement_returnsFirstConditionGroup() {
         String result = mapperWeather.firstConditionGroup(
                 List.of(new WeatherCondition(801, "Clouds", "overcast clouds", "04d")));
 
@@ -134,21 +134,21 @@ class MapperWeatherTest {
     }
 
     @Test
-    void firstConditionGroup_weatherConditionListIsNull_returnsNull() {
+    public void firstConditionGroup_weatherConditionListIsNull_returnsNull() {
         String result = mapperWeather.firstConditionGroup(null);
 
         assertNull(result);
     }
 
     @Test
-    void firstConditionGroup_weatherConditionListIsEmpty_returnsNull() {
+    public void firstConditionGroup_weatherConditionListIsEmpty_returnsNull() {
         String result = mapperWeather.firstConditionGroup(List.of());
 
         assertNull(result);
     }
 
     @Test
-    void firstDescription_weatherConditionListHasFirstElement_returnsFirstDescription() {
+    public void firstDescription_weatherConditionListHasFirstElement_returnsFirstDescription() {
         String result =
                 mapperWeather.firstDescription(List.of(new WeatherCondition(803, "Clouds", "broken clouds", "04d")));
 
@@ -156,14 +156,14 @@ class MapperWeatherTest {
     }
 
     @Test
-    void firstDescription_weatherConditionListIsNull_returnsNull() {
+    public void firstDescription_weatherConditionListIsNull_returnsNull() {
         String result = mapperWeather.firstDescription(null);
 
         assertNull(result);
     }
 
     @Test
-    void firstDescription_weatherConditionListIsEmpty_returnsNull() {
+    public void firstDescription_weatherConditionListIsEmpty_returnsNull() {
         String result = mapperWeather.firstDescription(List.of());
 
         assertNull(result);

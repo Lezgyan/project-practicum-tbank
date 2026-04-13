@@ -16,7 +16,7 @@ class RadiatorServiceTest {
     private final RadiatorService radiatorService = new RadiatorService();
 
     @Test
-    void apply_deviceTypeIsNotRadiator_doesNothing() {
+    public void apply_deviceTypeIsNotRadiator_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
 
@@ -24,7 +24,7 @@ class RadiatorServiceTest {
     }
 
     @Test
-    void apply_radiatorSettingsAreNull_doesNothing() {
+    public void apply_radiatorSettingsAreNull_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
         device.setRoom(new Room());
@@ -33,7 +33,7 @@ class RadiatorServiceTest {
     }
 
     @Test
-    void apply_outsideTemperatureIsNull_doesNothing() {
+    public void apply_outsideTemperatureIsNull_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
 
@@ -53,7 +53,7 @@ class RadiatorServiceTest {
     }
 
     @Test
-    void apply_coldWeatherRuleMatchesAndStateIsMissing_completesWithoutException() {
+    public void apply_coldWeatherRuleMatchesAndStateIsMissing_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
         device.setExternalId(java.util.UUID.randomUUID());
@@ -74,7 +74,7 @@ class RadiatorServiceTest {
     }
 
     @Test
-    void apply_hotWeatherRuleMatchesAndRadiatorAlreadyHasDesiredTemperature_doesNothing() {
+    public void apply_hotWeatherRuleMatchesAndRadiatorAlreadyHasDesiredTemperature_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
         device.setExternalId(java.util.UUID.randomUUID());

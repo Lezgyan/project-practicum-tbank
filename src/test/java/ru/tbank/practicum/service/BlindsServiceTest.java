@@ -17,7 +17,7 @@ class BlindsServiceTest {
     private final BlindsService blindsService = new BlindsService();
 
     @Test
-    void apply_deviceTypeIsNotBlinds_doesNothing() {
+    public void apply_deviceTypeIsNotBlinds_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
 
@@ -25,7 +25,7 @@ class BlindsServiceTest {
     }
 
     @Test
-    void apply_blindsSettingsAreNull_doesNothing() {
+    public void apply_blindsSettingsAreNull_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
 
@@ -41,7 +41,7 @@ class BlindsServiceTest {
     }
 
     @Test
-    void apply_openTimeMatchesAndBlindsAreClosed_completesWithoutException() {
+    public void apply_openTimeMatchesAndBlindsAreClosed_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
         device.setExternalId(java.util.UUID.randomUUID());
@@ -72,7 +72,7 @@ class BlindsServiceTest {
     }
 
     @Test
-    void apply_brightSunConditionMatches_completesWithoutException() {
+    public void apply_brightSunConditionMatches_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
         device.setExternalId(java.util.UUID.randomUUID());
@@ -102,7 +102,7 @@ class BlindsServiceTest {
     }
 
     @Test
-    void apply_hotWeatherConditionMatches_completesWithoutException() {
+    public void apply_hotWeatherConditionMatches_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
         device.setExternalId(java.util.UUID.randomUUID());

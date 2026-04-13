@@ -37,7 +37,7 @@ class RoomServiceTest {
     private RoomService roomService;
 
     @Test
-    void createRoom_validRequest_returnsMappedCreateRoomResponse() {
+    public void createRoom_validRequest_returnsMappedCreateRoomResponse() {
         DtoCreateRoom request = mock(DtoCreateRoom.class);
         Room room = new Room();
         Room savedRoom = new Room();
@@ -56,7 +56,7 @@ class RoomServiceTest {
     }
 
     @Test
-    void addDevice_existingRoomAndExistingDevice_addsDeviceToRoom() {
+    public void addDevice_existingRoomAndExistingDevice_addsDeviceToRoom() {
         Long roomId = 1L;
         Long deviceId = 2L;
 
@@ -72,7 +72,7 @@ class RoomServiceTest {
     }
 
     @Test
-    void addDevice_roomDoesNotExist_throwsEntityNotFoundException() {
+    public void addDevice_roomDoesNotExist_throwsEntityNotFoundException() {
         Long roomId = 1L;
         Long deviceId = 2L;
 
@@ -84,7 +84,7 @@ class RoomServiceTest {
     }
 
     @Test
-    void addDevice_deviceDoesNotExist_throwsEntityNotFoundException() {
+    public void addDevice_deviceDoesNotExist_throwsEntityNotFoundException() {
         Long roomId = 1L;
         Long deviceId = 2L;
 

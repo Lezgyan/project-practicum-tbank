@@ -29,7 +29,7 @@ class SettingsServiceTest {
     private SettingsService settingsService;
 
     @Test
-    void updateSettings_existingDeviceSettings_appliesPatchAndReturnsSavedResponse() {
+    public void updateSettings_existingDeviceSettings_appliesPatchAndReturnsSavedResponse() {
         Long deviceId = 10L;
 
         UpdateDeviceSettingsRequest request = mock(UpdateDeviceSettingsRequest.class);

@@ -1,117 +1,104 @@
 package ru.tbank.practicum.validation;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import jakarta.validation.ConstraintValidatorContext;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 class LessThanValidatorTest {
 
-    private LessThanValidator validator;
-
-    @Mock
-    private LessThan lessThan;
-
-    @Mock
-    private ConstraintValidatorContext context;
-
-    @Mock
-    private ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder;
-
-    @Mock
-    private ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext nodeBuilder;
+    private Validator validator;
 
     @BeforeEach
-    void setUp() {
-        validator = new LessThanValidator();
-
-        when(lessThan.less()).thenReturn("minValue");
-        when(lessThan.more()).thenReturn("maxValue");
-
-        validator.initialize(lessThan);
+    public void setUp() {
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     @Test
-    void isValid_valueIsNull_returnsTrue() {
-        boolean result = validator.isValid(null, context);
+    public void isValid_lessFieldIsLessThanMoreField_returnsTrue() {
+        TestRange dto = new TestRange(3, 10);
 
-        assertTrue(result);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
+
+        assertThat(violations).isEmpty();
     }
 
     @Test
-    void isValid_lessFieldIsLessThanMoreField_returnsTrue() {
-        TestRange value = new TestRange(3, 10);
+    public void isValid_lessFieldIsEqualToMoreField_returnsFalse() {
+        TestRange dto = new TestRange(5, 5);
 
-        boolean result = validator.isValid(value, context);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
 
-        assertTrue(result);
+        assertThat(violations).hasSize(1);
+        ConstraintViolation<TestRange> violation = violations.iterator().next();
+
+        assertEquals("maxValue должен быть больше minValue", violation.getMessage());
+        assertEquals("minValue", violation.getPropertyPath().toString());
     }
 
     @Test
-    void isValid_lessFieldIsEqualToMoreField_returnsFalse() {
-        TestRange value = new TestRange(5, 5);
+    public void isValid_lessFieldIsGreaterThanMoreField_returnsFalse() {
+        TestRange dto = new TestRange(10, 3);
 
-        when(context.buildConstraintViolationWithTemplate("maxValue должен быть больше minValue"))
-                .thenReturn(violationBuilder);
-        when(violationBuilder.addPropertyNode("minValue")).thenReturn(nodeBuilder);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
 
-        boolean result = validator.isValid(value, context);
+        assertThat(violations).hasSize(1);
+        ConstraintViolation<TestRange> violation = violations.iterator().next();
 
-        assertFalse(result);
+        assertEquals("maxValue должен быть больше minValue", violation.getMessage());
+        assertEquals("minValue", violation.getPropertyPath().toString());
     }
 
     @Test
-    void isValid_lessFieldIsGreaterThanMoreField_returnsFalse() {
-        TestRange value = new TestRange(10, 3);
+    public void isValid_lessFieldIsNull_returnsTrue() {
+        TestRange dto = new TestRange(null, 5);
 
-        when(context.buildConstraintViolationWithTemplate("maxValue должен быть больше minValue"))
-                .thenReturn(violationBuilder);
-        when(violationBuilder.addPropertyNode("minValue")).thenReturn(nodeBuilder);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
 
-        boolean result = validator.isValid(value, context);
-
-        assertFalse(result);
+        assertThat(violations).isEmpty();
     }
 
     @Test
-    void isValid_lessFieldIsNull_returnsTrue() {
-        TestRange value = new TestRange(null, 5);
+    public void isValid_moreFieldIsNull_returnsTrue() {
+        TestRange dto = new TestRange(5, null);
 
-        boolean result = validator.isValid(value, context);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
 
-        assertTrue(result);
-        verify(context, never()).disableDefaultConstraintViolation();
+        assertThat(violations).isEmpty();
     }
 
     @Test
-    void isValid_moreFieldIsNull_returnsTrue() {
-        TestRange value = new TestRange(5, null);
+    void valid_whenBothFieldsAreNull() {
+        TestRange dto = new TestRange(null, null);
 
-        boolean result = validator.isValid(value, context);
+        Set<ConstraintViolation<TestRange>> violations = validator.validate(dto);
 
-        assertTrue(result);
-        verify(context, never()).disableDefaultConstraintViolation();
+        assertThat(violations).isEmpty();
     }
 
     @Test
-    void isValid_fieldClassesDoNotMatch_throwsIllegalStateException() {
-        MixedTypes value = new MixedTypes(1, 5L);
+    public void isValid_fieldClassesDoNotMatch_throwsIllegalStateException() {
+        MixedTypes dto = new MixedTypes(1, 5L);
 
-        assertThatThrownBy(() -> validator.isValid(value, context))
+        assertThatThrownBy(() -> validator.validate(dto))
+                .hasCauseInstanceOf(IllegalStateException.class)
+                .rootCause()
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("Field classes do not match");
     }
 
+    @LessThan(less = "minValue", more = "maxValue")
     private static class TestRange {
         private final Integer minValue;
         private final Integer maxValue;
@@ -122,6 +109,7 @@ class LessThanValidatorTest {
         }
     }
 
+    @LessThan(less = "minValue", more = "maxValue")
     private static class MixedTypes {
         private final Integer minValue;
         private final Long maxValue;

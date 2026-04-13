@@ -42,7 +42,7 @@ class WeatherServiceTest {
     private WeatherService weatherService;
 
     @Test
-    void processRooms_roomWithoutWeather_setsMappedWeatherAndSavesRoom() {
+    public void processRooms_roomWithoutWeather_setsMappedWeatherAndSavesRoom() {
         Room room = new Room();
         room.setLat(55.75);
         room.setLon(37.61);
@@ -64,7 +64,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void processRooms_roomWithExistingWeather_updatesWeatherAndSavesRoom() {
+    public void processRooms_roomWithExistingWeather_updatesWeatherAndSavesRoom() {
         Room room = new Room();
         room.setLat(55.75);
         room.setLon(37.61);
@@ -85,7 +85,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void processRooms_weatherApiReturnsNull_throwsIllegalStateException() {
+    public void processRooms_weatherApiReturnsNull_throwsIllegalStateException() {
         Room room = new Room();
         room.setLat(55.75);
         room.setLon(37.61);
@@ -100,7 +100,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void processRooms_roomCoordinatesExist_requestsWeatherByRoomLatitudeAndLongitude() {
+    public void processRooms_roomCoordinatesExist_requestsWeatherByRoomLatitudeAndLongitude() {
         Long roomId = 1L;
         Room room = new Room();
         WeatherMeasurement weather = new WeatherMeasurement();
@@ -114,7 +114,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getWeatherByRoomId_roomDoesNotExist_throwsEntityNotFoundException() {
+    public void getWeatherByRoomId_roomDoesNotExist_throwsEntityNotFoundException() {
         Long roomId = 1L;
 
         when(roomRepository.findById(roomId)).thenReturn(Optional.empty());
@@ -125,7 +125,7 @@ class WeatherServiceTest {
     }
 
     @Test
-    void getWeatherByRoomId_existingRoom_returnsRoomWeather() {
+    public void getWeatherByRoomId_existingRoom_returnsRoomWeather() {
         Room room = new Room();
         room.setLat(10.0);
         room.setLon(20.0);

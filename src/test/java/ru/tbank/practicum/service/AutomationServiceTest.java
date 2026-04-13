@@ -37,7 +37,7 @@ class AutomationServiceTest {
     }
 
     @Test
-    void process_deviceStateHasNoError_appliesAllDeviceServices() {
+    public void process_deviceStateHasNoError_appliesAllDeviceServices() {
         Device device = new Device();
         DeviceState state = new DeviceState();
         state.setHasError(false);
@@ -55,7 +55,7 @@ class AutomationServiceTest {
     }
 
     @Test
-    void process_deviceStateHasError_skipsAllDeviceServices() {
+    public void process_deviceStateHasError_skipsAllDeviceServices() {
         Device device = new Device();
         DeviceState state = new DeviceState();
         state.setHasError(true);

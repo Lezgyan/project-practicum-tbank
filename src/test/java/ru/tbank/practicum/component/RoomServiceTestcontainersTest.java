@@ -35,7 +35,7 @@ class RoomServiceTestcontainersTest {
     private DeviceRepository deviceRepository;
 
     @Test
-    void givenExistingRoomAndExistingDevice_whenAddDevice_thenDeviceIsAddedToRoom() {
+    public void givenExistingRoomAndExistingDevice_whenAddDevice_thenDeviceIsAddedToRoom() {
 
         DtoCreateRoomResponse dtoCreateRoomResponse =
                 roomService.createRoom(new DtoCreateRoom("test-room", 12.0, 13.0, "Europe/Saratov"));

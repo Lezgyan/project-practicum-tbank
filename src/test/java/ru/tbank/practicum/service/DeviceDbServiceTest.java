@@ -35,7 +35,7 @@ class DeviceDbServiceTest {
     private DeviceDbService deviceDbService;
 
     @Test
-    void createDevice_radiatorType_initializesDefaultSettingsStateAndExternalId() {
+    public void createDevice_radiatorType_initializesDefaultSettingsStateAndExternalId() {
         DtoCreateDevice request = mock(DtoCreateDevice.class);
 
         Device device = new Device();
@@ -61,7 +61,7 @@ class DeviceDbServiceTest {
     }
 
     @Test
-    void createDevice_blindsType_initializesDefaultSettingsStateAndExternalId() {
+    public void createDevice_blindsType_initializesDefaultSettingsStateAndExternalId() {
         DtoCreateDevice request = mock(DtoCreateDevice.class);
 
         Device device = new Device();
