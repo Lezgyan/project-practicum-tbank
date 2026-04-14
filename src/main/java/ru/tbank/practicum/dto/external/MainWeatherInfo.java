@@ -1,7 +1,9 @@
 package ru.tbank.practicum.dto.external;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.Builder;
 
+@Builder
 public record MainWeatherInfo(
         @JsonProperty("temp") Double temperature,
         @JsonProperty("feels_like") Double feelsLike,

@@ -1,0 +1,30 @@
+spring:
+  datasource:
+    url: jdbc:tc:postgresql:16:///test_db
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    show-sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:/db/changelog/db.changelog-master.yml
+
+app:
+  house-rules:
+    rate: "0 * * * * *"
+  weather-service:
+    cred:
+      token: "test-token"
+    current-weather-endpoint: "/data/2.5/weather"
+    baseUrl: "https://api.openweathermap.org"
+    # Saratov
+    coordinate:
+      lon: 46.0
+      lat: 51.32
+    scheduler:
+      rate: 600000

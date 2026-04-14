@@ -3,7 +3,8 @@ plugins {
     id 'com.diffplug.spotless' version '8.3.0'
     id 'org.springframework.boot' version '4.0.3'
     id 'io.spring.dependency-management' version '1.1.7'
-    id("io.freefair.lombok") version "9.2.0"
+    id "io.freefair.lombok" version "9.2.0"
+    id 'jacoco'
 }
 
 group = 'ru.tbank.practicum'
@@ -34,13 +35,61 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-liquibase'
     runtimeOnly 'org.postgresql:postgresql'
 
+    testImplementation 'org.mockito:mockito-core:5.8.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.8.0'
+
+    testImplementation 'org.testcontainers:junit-jupiter:1.20.4'
+    testImplementation 'org.testcontainers:postgresql:1.20.4'
+
+    testImplementation "org.wiremock:wiremock-standalone:3.13.2"
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
+
+jacoco {
+    toolVersion = "0.8.14"
+    reportsDirectory = layout.buildDirectory.dir('customJacocoReportDir')
+}
+
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.required = false
+        csv.required = false
+        html.outputLocation = layout.buildDirectory.dir('jacocoHtml')
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                    "ru/tbank/practicum/config/*",
+                    "ru/tbank/practicum/dto/*",
+                    "ru/tbank/practicum/entity/*",
+                    "ru/tbank/practicum/enums/*",
+                    "ru/tbank/practicum/repository/*"
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.50
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
+
 
 // ----- Linter -----
 
