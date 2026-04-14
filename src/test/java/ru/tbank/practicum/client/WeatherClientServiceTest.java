@@ -8,12 +8,17 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.client.RestClient;
 import ru.tbank.practicum.config.WeatherServiceProperties;
 import ru.tbank.practicum.dto.external.DtoCoordinateRequest;
@@ -24,6 +29,9 @@ class WeatherClientServiceTest {
 
     private static WireMockServer wireMockServer;
     private WeatherClientService service;
+
+    private final ResourceLoader resourceLoader = new DefaultResourceLoader();
+
 
     @BeforeEach
     void setUp() {
@@ -51,7 +59,7 @@ class WeatherClientServiceTest {
                 .withQueryParam("lon", equalTo("0.0"))
                 .withQueryParam("units", equalTo("metric"))
                 .withQueryParam("appid", equalTo("test-token"))
-                .willReturn(okJson(readResource("stubs/weather/success-response.json"))));
+                .willReturn(okJson(readResource("classpath:stubs/weather/success-response.json"))));
 
         DtoCoordinateRequest request = new DtoCoordinateRequest(0.0, 0.0);
 
@@ -67,10 +75,9 @@ class WeatherClientServiceTest {
     }
 
     private String readResource(String path) {
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(path)) {
-            if (inputStream == null) {
-                throw new IllegalArgumentException("Resource not found: " + path);
-            }
+        Resource resource = resourceLoader.getResource(path);
+
+        try (InputStream inputStream = resource.getInputStream()) {
             return new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException("Failed to read resource: " + path, e);
