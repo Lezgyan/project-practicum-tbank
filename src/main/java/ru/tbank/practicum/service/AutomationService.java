@@ -21,6 +21,10 @@ public class AutomationService {
 
         List<Room> rooms = roomRepository.getRooms();
 
+        for (DeviceService deviceService : deviceServiceList) {
+            deviceService.beforeBatch();
+        }
+
         for (Room room : rooms) {
             List<Device> devices = room.getDevices();
 
@@ -33,6 +37,10 @@ public class AutomationService {
                     deviceService.apply(device);
                 }
             }
+        }
+
+        for (DeviceService deviceService : deviceServiceList) {
+            deviceService.afterBatch();
         }
     }
 

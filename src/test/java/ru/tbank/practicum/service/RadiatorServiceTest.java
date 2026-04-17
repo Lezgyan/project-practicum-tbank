@@ -3,6 +3,10 @@ package ru.tbank.practicum.service;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
@@ -11,9 +15,14 @@ import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.RadiatorStatePayload;
 import ru.tbank.practicum.enums.DeviceType;
 
+@ExtendWith(MockitoExtension.class)
 class RadiatorServiceTest {
 
-    private final RadiatorService radiatorService = new RadiatorService();
+    @Mock
+    private DeviceCommandService deviceCommandService;
+
+    @InjectMocks
+    private RadiatorService radiatorService;
 
     @Test
     public void apply_deviceTypeIsNotRadiator_doesNothing() {

@@ -3,7 +3,13 @@ package ru.tbank.practicum.service;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalTime;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
@@ -12,9 +18,24 @@ import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.BlindsStatePayload;
 import ru.tbank.practicum.enums.DeviceType;
 
+@ExtendWith(MockitoExtension.class)
 class BlindsServiceTest {
 
-    private final BlindsService blindsService = new BlindsService();
+    @Mock
+    private DeviceCommandService deviceCommandService;
+
+    @InjectMocks
+    private BlindsService blindsService;
+
+    @BeforeEach
+    public void setUp() {
+        blindsService.beforeBatch();
+    }
+
+    @AfterEach
+    public void down() {
+        blindsService.afterBatch();
+    }
 
     @Test
     public void apply_deviceTypeIsNotBlinds_doesNothing() {

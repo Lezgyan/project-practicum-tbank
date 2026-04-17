@@ -1,0 +1,103 @@
+{
+  "type": "record",
+  "namespace": "ru.tbank.practicum.avro",
+  "name": "DeviceEventMessageAvro",
+  "fields": [
+    { "name": "deviceId", "type": "long" },
+    {
+      "name": "externalId",
+      "type": "string"
+    },
+    {
+      "name": "eventType",
+      "type": {
+        "type": "enum",
+        "name": "EventTypeAvro",
+        "symbols": [
+          "BLINDS_STATE_CHANGED",
+          "RADIATOR_STATE_CHANGED",
+          "ERROR",
+          "RECOVERED",
+          "HEARTBEAT"
+        ]
+      }
+    },
+    {
+      "name": "payload",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "BlindsStateChangedEventPayloadAvro",
+          "fields": [
+            {
+              "name": "open",
+              "type": "boolean"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RadiatorStateChangedEventPayloadAvro",
+          "fields": [
+            {
+              "name": "temperature",
+              "type": "double"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceErrorEventPayloadAvro",
+          "fields": [
+            {
+              "name": "code",
+              "type": "string"
+            },
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceRecoveredEventPayloadAvro",
+          "fields": [
+            {
+              "name": "message",
+              "type": "string"
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceHeartbeatEventPayloadAvro",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "long"
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "hasError",
+      "type": "boolean"
+    },
+    {
+      "name": "errorMessage",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "createdAt",
+      "type": "long"
+    }
+  ]
+}

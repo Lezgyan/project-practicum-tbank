@@ -1,0 +1,56 @@
+{
+  "type": "record",
+  "name": "DeviceCommandMessageAvro",
+  "namespace": "ru.tbank.practicum.avro",
+  "fields": [
+    { "name": "deviceId", "type": "long" },
+    { "name": "externalId", "type": "string" },
+    {
+      "name": "deviceType",
+      "type": {
+        "type": "enum",
+        "name": "DeviceTypeAvro",
+        "symbols": ["BLINDS", "RADIATOR"]
+      }
+    },
+    {
+      "name": "commandType",
+      "type": {
+        "type": "enum",
+        "name": "CommandTypeAvro",
+        "symbols": ["OPEN", "CLOSE", "SET_TEMPERATURE"]
+      }
+    },
+    {
+      "name": "payload",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "BlindsCommandPayloadAvro",
+          "fields": [
+            {
+              "name": "state",
+              "type": {
+                "type": "enum",
+                "name": "BlindsStateAvro",
+                "symbols": ["OPEN", "CLOSE"]
+              }
+            },
+            { "name": "reason", "type": "string" }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RadiatorCommandPayloadAvro",
+          "fields": [
+            { "name": "targetTemperature", "type": "double" },
+            { "name": "reason", "type": "string" }
+          ]
+        }
+      ],
+      "default": null
+    },
+    { "name": "createdAtEpochMillis", "type": "long" }
+  ]
+}
