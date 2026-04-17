@@ -28,3 +28,8 @@ app:
       lat: 51.32
     scheduler:
       rate: 600000
+  kafka:
+    topics:
+      blinds-commands: test-blinds-commands
+      radiator-commands: test-radiator-commands
+      device-events: test-device-events
