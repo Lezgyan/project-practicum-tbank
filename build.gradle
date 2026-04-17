@@ -108,6 +108,7 @@ check.dependsOn jacocoTestCoverageVerification
 
 spotless {
     java {
+        targetExclude 'build/*/**/*.*'
         palantirJavaFormat().formatJavadoc(true)
     }
 }
