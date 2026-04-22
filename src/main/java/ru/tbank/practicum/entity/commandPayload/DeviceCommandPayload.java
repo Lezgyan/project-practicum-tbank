@@ -8,4 +8,4 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
     @JsonSubTypes.Type(value = BlindsCommandPayload.class, name = "BLINDS_COMMAND"),
     @JsonSubTypes.Type(value = RadiatorCommandPayload.class, name = "RADIATOR_COMMAND")
 })
-public interface DeviceCommandPayload {}
+public sealed interface DeviceCommandPayload permits BlindsCommandPayload, RadiatorCommandPayload {}

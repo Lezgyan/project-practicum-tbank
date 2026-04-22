@@ -2,6 +2,7 @@ package ru.tbank.practicum.service;
 
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbank.practicum.avro.BlindsStateChangedEventPayloadAvro;
@@ -19,6 +20,7 @@ import ru.tbank.practicum.enums.DeviceStatus;
 import ru.tbank.practicum.repository.DeviceRepository;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class DeviceEventService {
 
@@ -26,10 +28,15 @@ public class DeviceEventService {
 
     @Transactional
     public void handle(DeviceEventMessageAvro event) {
-        Device device = deviceRepository
-                .findById(event.getDeviceId())
-                .orElseThrow(
-                        () -> new IllegalArgumentException("Device not found by externalId: " + event.getDeviceId()));
+        Device device = deviceRepository.findById(event.getDeviceId()).orElse(null);
+
+        if (device == null) {
+            log.warn(
+                    "Событие пропущено: устройство не найдено. deviceId={}, eventType={}",
+                    event.getDeviceId(),
+                    event.getEventType());
+            return;
+        }
 
         DeviceState state = device.getDeviceState();
 
@@ -42,7 +49,13 @@ public class DeviceEventService {
             case ERROR -> handleDeviceError(device, state, payload);
             case RECOVERED -> handleDeviceRecovered(device, state, payload);
             case HEARTBEAT -> handleDeviceHeartbeat(device, state, payload);
-            default -> throw new IllegalArgumentException("Unsupported event type: " + eventType);
+            default -> {
+                log.warn(
+                        "Событие пропущено: неподдерживаемый eventType={}, deviceId={}",
+                        eventType,
+                        event.getDeviceId());
+                return;
+            }
         }
 
         deviceRepository.save(device);

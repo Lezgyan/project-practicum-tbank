@@ -1,9 +1,12 @@
 package ru.tbank.practicum.service;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,8 +53,8 @@ class AutomationServiceTest {
 
         automationService.process();
 
-        verify(deviceService1).apply(device);
-        verify(deviceService2).apply(device);
+        verify(deviceService1).apply(eq(device), any(ZonedDateTime.class));
+        verify(deviceService2).apply(eq(device), any(ZonedDateTime.class));
     }
 
     @Test
@@ -60,6 +63,7 @@ class AutomationServiceTest {
         DeviceState state = new DeviceState();
         state.setHasError(true);
         device.setDeviceState(state);
+        ZonedDateTime now = ZonedDateTime.now();
 
         Room room = new Room();
         room.setDevices(List.of(device));
@@ -70,7 +74,7 @@ class AutomationServiceTest {
 
         automationService.process();
 
-        verify(deviceService1, never()).apply(device);
-        verify(deviceService2, never()).apply(device);
+        verify(deviceService1, never()).apply(device, now);
+        verify(deviceService2, never()).apply(device, now);
     }
 }

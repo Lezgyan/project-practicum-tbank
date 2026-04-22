@@ -1,5 +1,6 @@
 package ru.tbank.practicum.service;
 
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ public class RadiatorService implements DeviceService {
     private final DeviceCommandService deviceCommandService;
 
     @Override
-    public void apply(Device device) {
+    public void apply(Device device, ZonedDateTime now) {
         if (device.getType() != DeviceType.RADIATOR) {
             return;
         }
@@ -30,11 +31,11 @@ public class RadiatorService implements DeviceService {
 
         DeviceSettings settings = device.getSettings();
 
-        if (settings == null) {
+        WeatherMeasurement weatherMeasurement = device.getRoom().getWeather();
+
+        if (weatherMeasurement == null || settings == null) {
             return;
         }
-
-        WeatherMeasurement weatherMeasurement = device.getRoom().getWeather();
 
         applyRadiatorRule(device, settings, weatherMeasurement);
     }

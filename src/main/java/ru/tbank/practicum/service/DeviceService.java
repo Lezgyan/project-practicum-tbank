@@ -1,11 +1,8 @@
 package ru.tbank.practicum.service;
 
+import java.time.ZonedDateTime;
 import ru.tbank.practicum.entity.Device;
 
 public interface DeviceService {
-    default void beforeBatch() {}
-
-    void apply(Device device);
-
-    default void afterBatch() {}
+    void apply(Device device, ZonedDateTime now);
 }

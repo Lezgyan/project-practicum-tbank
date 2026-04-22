@@ -27,12 +27,18 @@ public class RadiatorDeviceEmulator {
                 command.getExternalId(),
                 command.getCommandType());
 
-        double temperature = -300;
-        if (command.getPayload() instanceof RadiatorCommandPayloadAvro) {
-            temperature = ((RadiatorCommandPayloadAvro) command.getPayload()).getTargetTemperature();
-        } else {
-            throw new IllegalStateException("В КАФКУ В ТОПИК radiator-commands ПРИШЛО ЧТО ТО НЕ ТО");
+        if (!(command.getPayload() instanceof RadiatorCommandPayloadAvro)) {
+            log.warn(
+                    "В топик radiator-commands пришел payload неподходящего типа: payloadClass={}, deviceId={}, commandType={}",
+                    command.getPayload() == null
+                            ? null
+                            : command.getPayload().getClass().getName(),
+                    command.getDeviceId(),
+                    command.getCommandType());
+            return;
         }
+
+        double temperature = ((RadiatorCommandPayloadAvro) command.getPayload()).getTargetTemperature();
 
         RadiatorStateChangedEventPayloadAvro payload = RadiatorStateChangedEventPayloadAvro.newBuilder()
                 .setTemperature(temperature)

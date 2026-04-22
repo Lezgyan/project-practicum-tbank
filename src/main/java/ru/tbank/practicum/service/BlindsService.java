@@ -3,7 +3,6 @@ package ru.tbank.practicum.service;
 import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,31 +21,18 @@ import ru.tbank.practicum.enums.DeviceType;
 public class BlindsService implements DeviceService {
 
     private final DeviceCommandService deviceCommandService;
-    private ZonedDateTime batchPreviousRunAt;
-    private ZonedDateTime batchCurrentRunAt;
-    private ZonedDateTime lastRunAt;
 
     @Override
-    public void beforeBatch() {
-        batchCurrentRunAt = ZonedDateTime.now().truncatedTo(ChronoUnit.MINUTES);
-        batchPreviousRunAt = lastRunAt == null ? batchCurrentRunAt.minusMinutes(1) : lastRunAt;
-    }
-
-    @Override
-    public void apply(Device device) {
+    public void apply(Device device, ZonedDateTime now) {
         if (device.getType() != DeviceType.BLINDS) {
             return;
         }
-        applyTimeRules(device);
+
+        applyTimeRules(device, now);
         applyWeatherRule(device);
     }
 
-    @Override
-    public void afterBatch() {
-        lastRunAt = batchCurrentRunAt;
-    }
-
-    private void applyTimeRules(Device device) {
+    private void applyTimeRules(Device device, ZonedDateTime now) {
 
         DeviceSettings settings = device.getSettings();
 
@@ -54,34 +40,42 @@ public class BlindsService implements DeviceService {
             return;
         }
 
-        ZoneId zoneId = ZoneId.of(device.getRoom().getTimezone());
-
-        LocalTime from = batchPreviousRunAt
-                .withZoneSameInstant(zoneId)
-                .truncatedTo(ChronoUnit.MINUTES)
-                .toLocalTime();
-
-        LocalTime to = batchCurrentRunAt
-                .withZoneSameInstant(zoneId)
-                .truncatedTo(ChronoUnit.MINUTES)
-                .toLocalTime();
+        ZoneId zoneId;
+        try {
+            zoneId = ZoneId.of(device.getRoom().getTimezone());
+        } catch (Exception e) {
+            log.warn(
+                    "Пропущена обработка штор: некорректный timezone='{}', deviceId={}",
+                    device.getRoom().getTimezone(),
+                    device.getId());
+            return;
+        }
 
         LocalTime openTime = settings.getBlindsOpenTime();
 
-        if (openTime != null && isTimeInWindow(openTime, from, to) && !isBlindsAlready(device, true)) {
-
-            // SENT KAFKA
-            deviceCommandService.setBlinds(device, BlindsState.OPEN, AutoDeviceCommand.AUTO_TIME_OPEN);
-
-            log.info("Auto open blinds: {}", device.getId());
-        }
         LocalTime closeTime = settings.getBlindsCloseTime();
 
-        if (closeTime != null && isTimeInWindow(closeTime, from, to) && !isBlindsAlready(device, false)) {
-            // SENT KAFKA
-            deviceCommandService.setBlinds(device, BlindsState.CLOSED, AutoDeviceCommand.AUTO_TIME_CLOSE);
+        if (openTime == null && closeTime == null) {
+            return;
+        }
 
-            log.info("Auto close blinds: {}", device.getId());
+        LocalTime localNow = now.withZoneSameInstant(zoneId).toLocalTime();
+
+        Boolean desiredOpen = calculateDesiredOpenState(localNow, openTime, closeTime);
+        if (desiredOpen == null) {
+            return;
+        }
+
+        if (isBlindsAlready(device, desiredOpen)) {
+            return;
+        }
+
+        if (desiredOpen) {
+            deviceCommandService.setBlinds(device, BlindsState.OPEN, AutoDeviceCommand.AUTO_TIME_OPEN);
+            log.info("Auto open blinds by time rule: {}", device.getId());
+        } else {
+            deviceCommandService.setBlinds(device, BlindsState.CLOSED, AutoDeviceCommand.AUTO_TIME_CLOSE);
+            log.info("Auto close blinds by time rule: {}", device.getId());
         }
     }
 
@@ -107,16 +101,28 @@ public class BlindsService implements DeviceService {
         }
     }
 
-    private boolean isTimeInWindow(LocalTime target, LocalTime from, LocalTime to) {
-        if (from.equals(to)) {
-            return false;
+    private Boolean calculateDesiredOpenState(LocalTime now, LocalTime openTime, LocalTime closeTime) {
+        if (openTime == null && closeTime == null) {
+            return null;
         }
 
-        if (from.isBefore(to)) {
-            return target.isAfter(from) && (target.equals(to) || target.isBefore(to));
+        if (openTime != null && closeTime == null) {
+            return !now.isBefore(openTime);
         }
 
-        return target.isAfter(from) || target.equals(to) || target.isBefore(to);
+        if (openTime == null) {
+            return now.isBefore(closeTime);
+        }
+
+        if (openTime.equals(closeTime)) {
+            return null;
+        }
+
+        if (openTime.isBefore(closeTime)) {
+            return !now.isBefore(openTime) && now.isBefore(closeTime);
+        }
+
+        return !now.isBefore(openTime) || now.isBefore(closeTime);
     }
 
     private boolean isBlindsAlready(Device device, boolean desiredOpen) {

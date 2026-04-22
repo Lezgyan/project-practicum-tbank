@@ -34,22 +34,19 @@ public class DeviceCommandMessageMapper {
     }
 
     private Object mapPayload(DeviceCommandPayload payload) {
-        if (payload instanceof BlindsCommandPayload blinds) {
-            return BlindsCommandPayloadAvro.newBuilder()
-                    .setState(mapBlindsState(blinds.getCommand()))
-                    .setReason(blinds.getReason().name())
-                    .build();
-        }
 
-        if (payload instanceof RadiatorCommandPayload radiator) {
-            return RadiatorCommandPayloadAvro.newBuilder()
-                    .setTargetTemperature(radiator.getTargetTemperature())
-                    .setReason(radiator.getReason().name())
-                    .build();
-        }
-
-        throw new IllegalArgumentException(
-                "Unsupported payload type: " + payload.getClass().getName());
+        return switch (payload) {
+            case BlindsCommandPayload blinds ->
+                BlindsCommandPayloadAvro.newBuilder()
+                        .setState(mapBlindsState(blinds.getCommand()))
+                        .setReason(blinds.getReason().name())
+                        .build();
+            case RadiatorCommandPayload radiator ->
+                RadiatorCommandPayloadAvro.newBuilder()
+                        .setTargetTemperature(radiator.getTargetTemperature())
+                        .setReason(radiator.getReason().name())
+                        .build();
+        };
     }
 
     private DeviceTypeAvro mapDeviceType(DeviceType type) {

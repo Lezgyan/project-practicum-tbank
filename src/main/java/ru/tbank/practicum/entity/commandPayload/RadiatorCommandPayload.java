@@ -8,7 +8,7 @@ import ru.tbank.practicum.enums.AutoDeviceCommand;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RadiatorCommandPayload implements DeviceCommandPayload {
+public final class RadiatorCommandPayload implements DeviceCommandPayload {
     private double targetTemperature;
     private AutoDeviceCommand reason;
 }

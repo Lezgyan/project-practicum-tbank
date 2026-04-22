@@ -9,7 +9,7 @@ import ru.tbank.practicum.enums.BlindsState;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BlindsCommandPayload implements DeviceCommandPayload {
+public final class BlindsCommandPayload implements DeviceCommandPayload {
     private BlindsState command;
     private AutoDeviceCommand reason;
 }
