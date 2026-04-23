@@ -2,7 +2,13 @@ package ru.tbank.practicum.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import java.time.ZonedDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
@@ -11,29 +17,41 @@ import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.RadiatorStatePayload;
 import ru.tbank.practicum.enums.DeviceType;
 
+@ExtendWith(MockitoExtension.class)
 class RadiatorServiceTest {
 
-    private final RadiatorService radiatorService = new RadiatorService();
+    @Mock
+    private DeviceCommandService deviceCommandService;
+
+    @InjectMocks
+    private RadiatorService radiatorService;
 
     @Test
-    public void apply_deviceTypeIsNotRadiator_doesNothing() {
+    void apply_deviceTypeIsNotRadiator_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
 
-        assertThatCode(() -> radiatorService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> radiatorService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_radiatorSettingsAreNull_doesNothing() {
+    void apply_radiatorSettingsAreEmpty_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
         device.setRoom(new Room());
+        DeviceSettings settings = new DeviceSettings();
 
-        assertThatCode(() -> radiatorService.apply(device)).doesNotThrowAnyException();
+        device.setSettings(settings);
+
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> radiatorService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_outsideTemperatureIsNull_doesNothing() {
+    void apply_outsideTemperatureIsNull_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
 
@@ -49,14 +67,16 @@ class RadiatorServiceTest {
         room.setWeather(weather);
         device.setRoom(room);
 
-        assertThatCode(() -> radiatorService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> radiatorService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_coldWeatherRuleMatchesAndStateIsMissing_completesWithoutException() {
+    void apply_coldWeatherRuleMatchesAndStateIsMissing_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
-        device.setExternalId(java.util.UUID.randomUUID());
+        device.setExternalId(UUID.randomUUID());
 
         DeviceSettings settings = new DeviceSettings();
         settings.setColdWeatherTemperature(0.0);
@@ -70,14 +90,16 @@ class RadiatorServiceTest {
         room.setWeather(weather);
         device.setRoom(room);
 
-        assertThatCode(() -> radiatorService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> radiatorService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_hotWeatherRuleMatchesAndRadiatorAlreadyHasDesiredTemperature_doesNothing() {
+    void apply_hotWeatherRuleMatchesAndRadiatorAlreadyHasDesiredTemperature_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
-        device.setExternalId(java.util.UUID.randomUUID());
+        device.setExternalId(UUID.randomUUID());
 
         DeviceSettings settings = new DeviceSettings();
         settings.setHotWeatherTemperature(25.0);
@@ -97,6 +119,8 @@ class RadiatorServiceTest {
         deviceState.setDeviceStatePayload(payload);
         device.setDeviceState(deviceState);
 
-        assertThatCode(() -> radiatorService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> radiatorService.apply(device, now)).doesNotThrowAnyException();
     }
 }

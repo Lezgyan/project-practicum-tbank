@@ -1,0 +1,126 @@
+{
+  "type": "record",
+  "namespace": "ru.tbank.practicum.avro",
+  "name": "DeviceEventMessageAvro",
+  "doc": "Событие от устройства умного дома, описывающее изменение состояния.",
+  "fields": [
+    {
+      "name": "deviceId",
+      "type": "long",
+      "doc": "Внутренний идентификатор устройства в системе."
+    },
+    {
+      "name": "externalId",
+      "type": "string",
+      "doc": "Внешний идентификатор устройства, используемый во внешних интеграциях или клиентских системах."
+    },
+    {
+      "name": "eventType",
+      "doc": "Тип события устройства, определяющий смысл и структуру payload.",
+      "type": {
+        "type": "enum",
+        "name": "EventTypeAvro",
+        "doc": "Поддерживаемые типы событий от устройств умного дома.",
+        "symbols": [
+          "BLINDS_STATE_CHANGED",
+          "RADIATOR_STATE_CHANGED",
+          "ERROR",
+          "RECOVERED",
+          "HEARTBEAT"
+        ]
+      }
+    },
+    {
+      "name": "payload",
+      "doc": "Дополнительные данные события. Конкретная структура зависит от типа события.",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "BlindsStateChangedEventPayloadAvro",
+          "doc": "Данные события изменения состояния штор.",
+          "fields": [
+            {
+              "name": "open",
+              "type": "boolean",
+              "doc": "Текущее состояние штор после изменения: true — открыты, false — закрыты."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RadiatorStateChangedEventPayloadAvro",
+          "doc": "Данные события изменения состояния радиатора.",
+          "fields": [
+            {
+              "name": "temperature",
+              "type": "double",
+              "doc": "Текущее значение температуры радиатора после изменения состояния."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceErrorEventPayloadAvro",
+          "doc": "Данные события ошибки устройства.",
+          "fields": [
+            {
+              "name": "code",
+              "type": "string",
+              "doc": "Машиночитаемый код ошибки."
+            },
+            {
+              "name": "message",
+              "type": "string",
+              "doc": "Текстовое описание ошибки, удобное для чтения человеком."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceRecoveredEventPayloadAvro",
+          "doc": "Данные события восстановления устройства после ошибки.",
+          "fields": [
+            {
+              "name": "message",
+              "type": "string",
+              "doc": "Текстовое описание восстановления или текущего состояния устройства после выхода из ошибки."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "DeviceHeartbeatEventPayloadAvro",
+          "doc": "Данные heartbeat-события, подтверждающего, что устройство активно и доступно.",
+          "fields": [
+            {
+              "name": "timestamp",
+              "type": "long",
+              "doc": "Момент времени, когда устройство сформировало heartbeat-событие, в миллисекундах Unix Epoch."
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "hasError",
+      "type": "boolean",
+      "doc": "Признак того, что устройство находится в состоянии ошибки на момент формирования события."
+    },
+    {
+      "name": "errorMessage",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null,
+      "doc": "Дополнительное текстовое описание ошибки на верхнем уровне сообщения, если событие связано с ошибкой устройства."
+    },
+    {
+      "name": "createdAt",
+      "type": "long",
+      "doc": "Момент создания сообщения в миллисекундах."
+    }
+  ]
+}

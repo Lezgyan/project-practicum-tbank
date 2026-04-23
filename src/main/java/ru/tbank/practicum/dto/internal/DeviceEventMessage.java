@@ -6,6 +6,7 @@ import ru.tbank.practicum.enums.EventType;
 
 public record DeviceEventMessage(
         String externalId,
+        long deviceID,
         EventType eventType,
         DeviceEventPayload payload,
         boolean hasError,

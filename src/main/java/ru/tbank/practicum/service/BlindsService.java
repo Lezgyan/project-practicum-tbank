@@ -2,7 +2,7 @@ package ru.tbank.practicum.service;
 
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.time.temporal.ChronoUnit;
+import java.time.ZonedDateTime;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,8 @@ import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
 import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.BlindsStatePayload;
+import ru.tbank.practicum.enums.AutoDeviceCommand;
+import ru.tbank.practicum.enums.BlindsState;
 import ru.tbank.practicum.enums.DeviceType;
 
 @Slf4j
@@ -18,17 +20,19 @@ import ru.tbank.practicum.enums.DeviceType;
 @RequiredArgsConstructor
 public class BlindsService implements DeviceService {
 
+    private final DeviceCommandService deviceCommandService;
+
     @Override
-    public void apply(Device device) {
+    public void apply(Device device, ZonedDateTime now) {
         if (device.getType() != DeviceType.BLINDS) {
             return;
         }
-        applyTimeRules(device);
+
+        applyTimeRules(device, now);
         applyWeatherRule(device);
     }
 
-    private void applyTimeRules(Device device) {
-        LocalTime now = LocalTime.now(ZoneId.of(device.getRoom().getTimezone())).truncatedTo(ChronoUnit.MINUTES);
+    private void applyTimeRules(Device device, ZonedDateTime now) {
 
         DeviceSettings settings = device.getSettings();
 
@@ -36,19 +40,42 @@ public class BlindsService implements DeviceService {
             return;
         }
 
-        if (settings.getBlindsOpenTime() != null && now.equals(settings.getBlindsOpenTime())) {
-            if (!isBlindsAlready(device, true)) {
-                // SENT KAFKA
-                log.info("Auto open blinds: {}", device.getExternalId());
-            }
+        ZoneId zoneId;
+        try {
+            zoneId = ZoneId.of(device.getRoom().getTimezone());
+        } catch (Exception e) {
+            log.warn(
+                    "Пропущена обработка штор: некорректный timezone='{}', deviceId={}",
+                    device.getRoom().getTimezone(),
+                    device.getId());
+            return;
         }
 
-        if (settings.getBlindsCloseTime() != null && now.equals(settings.getBlindsCloseTime())) {
-            if (!isBlindsAlready(device, false)) {
-                // SENT KAFKA
+        LocalTime openTime = settings.getBlindsOpenTime();
 
-                log.info("Auto close blinds: {}", device.getExternalId());
-            }
+        LocalTime closeTime = settings.getBlindsCloseTime();
+
+        if (openTime == null && closeTime == null) {
+            return;
+        }
+
+        LocalTime localNow = now.withZoneSameInstant(zoneId).toLocalTime();
+
+        Boolean desiredOpen = calculateDesiredOpenState(localNow, openTime, closeTime);
+        if (desiredOpen == null) {
+            return;
+        }
+
+        if (isBlindsAlready(device, desiredOpen)) {
+            return;
+        }
+
+        if (desiredOpen) {
+            deviceCommandService.setBlinds(device, BlindsState.OPEN, AutoDeviceCommand.AUTO_TIME_OPEN);
+            log.info("Auto open blinds by time rule: {}", device.getId());
+        } else {
+            deviceCommandService.setBlinds(device, BlindsState.CLOSED, AutoDeviceCommand.AUTO_TIME_CLOSE);
+            log.info("Auto close blinds by time rule: {}", device.getId());
         }
     }
 
@@ -68,8 +95,34 @@ public class BlindsService implements DeviceService {
 
         if ((brightSun || hot) && !isBlindsAlready(device, false)) {
             // SENT KAFKA
-            log.info("Auto close blinds because of weather: {}", device.getExternalId());
+            deviceCommandService.setBlinds(device, BlindsState.CLOSED, AutoDeviceCommand.AUTO_BRIGHT_SUN);
+
+            log.info("Auto close blinds because of weather: {}", device.getId());
         }
+    }
+
+    private Boolean calculateDesiredOpenState(LocalTime now, LocalTime openTime, LocalTime closeTime) {
+        if (openTime == null && closeTime == null) {
+            return null;
+        }
+
+        if (openTime != null && closeTime == null) {
+            return !now.isBefore(openTime);
+        }
+
+        if (openTime == null) {
+            return now.isBefore(closeTime);
+        }
+
+        if (openTime.equals(closeTime)) {
+            return null;
+        }
+
+        if (openTime.isBefore(closeTime)) {
+            return !now.isBefore(openTime) && now.isBefore(closeTime);
+        }
+
+        return !now.isBefore(openTime) || now.isBefore(closeTime);
     }
 
     private boolean isBlindsAlready(Device device, boolean desiredOpen) {

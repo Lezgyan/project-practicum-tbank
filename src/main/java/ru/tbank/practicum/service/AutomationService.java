@@ -1,5 +1,6 @@
 package ru.tbank.practicum.service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,8 @@ public class AutomationService {
 
         List<Room> rooms = roomRepository.getRooms();
 
+        ZonedDateTime now = ZonedDateTime.now();
+
         for (Room room : rooms) {
             List<Device> devices = room.getDevices();
 
@@ -30,7 +33,7 @@ public class AutomationService {
                 }
 
                 for (DeviceService deviceService : deviceServiceList) {
-                    deviceService.apply(device);
+                    deviceService.apply(device, now);
                 }
             }
         }

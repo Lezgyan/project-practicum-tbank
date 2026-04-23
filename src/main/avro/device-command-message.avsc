@@ -1,0 +1,90 @@
+{
+  "type": "record",
+  "name": "DeviceCommandMessageAvro",
+  "namespace": "ru.tbank.practicum.avro",
+  "doc": "Сообщение с командой для управления устройством умного дома.",
+  "fields": [
+    {
+      "name": "deviceId",
+      "type": "long",
+      "doc": "Внутренний идентификатор устройства в системе."
+    },
+    {
+      "name": "externalId",
+      "type": "string",
+      "doc": "Внешний идентификатор устройства"
+    },
+    {
+      "name": "deviceType",
+      "doc": "Тип устройства, для которого предназначена команда.",
+      "type": {
+        "type": "enum",
+        "name": "DeviceTypeAvro",
+        "doc": "Поддерживаемые типы устройств умного дома.",
+        "symbols": ["BLINDS", "RADIATOR"]
+      }
+    },
+    {
+      "name": "commandType",
+      "doc": "Тип команды, определяющий действие над устройством.",
+      "type": {
+        "type": "enum",
+        "name": "CommandTypeAvro",
+        "doc": "Поддерживаемые команды для устройств.",
+        "symbols": ["OPEN", "CLOSE", "SET_TEMPERATURE"]
+      }
+    },
+    {
+      "name": "payload",
+      "doc": "Дополнительные параметры команды. Конкретная структура зависит от типа устройства и команды.",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "BlindsCommandPayloadAvro",
+          "doc": "Параметры команды для устройства типа шторы.",
+          "fields": [
+            {
+              "name": "state",
+              "doc": "Целевое состояние штор после выполнения команды.",
+              "type": {
+                "type": "enum",
+                "name": "BlindsStateAvro",
+                "doc": "Возможные состояния штор.",
+                "symbols": ["OPEN", "CLOSE"]
+              }
+            },
+            {
+              "name": "reason",
+              "type": "string",
+              "doc": "Причина формирования команды, например автоматический сценарий или ручное изменение."
+            }
+          ]
+        },
+        {
+          "type": "record",
+          "name": "RadiatorCommandPayloadAvro",
+          "doc": "Параметры команды для устройства типа радиатор.",
+          "fields": [
+            {
+              "name": "targetTemperature",
+              "type": "double",
+              "doc": "Целевая температура, которую нужно установить на радиаторе."
+            },
+            {
+              "name": "reason",
+              "type": "string",
+              "doc": "Причина формирования команды, например автоматический сценарий или ручное изменение."
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "createdAtEpochMillis",
+      "type": "long",
+      "doc": "Момент создания команды в миллисекундах Unix Epoch."
+    }
+  ]
+}

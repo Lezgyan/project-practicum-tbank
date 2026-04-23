@@ -1,5 +1,7 @@
 package ru.tbank.practicum.service;
 
+import java.time.ZonedDateTime;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.entity.Device;
@@ -7,14 +9,18 @@ import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
 import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.RadiatorStatePayload;
+import ru.tbank.practicum.enums.AutoDeviceCommand;
 import ru.tbank.practicum.enums.DeviceType;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class RadiatorService implements DeviceService {
 
+    private final DeviceCommandService deviceCommandService;
+
     @Override
-    public void apply(Device device) {
+    public void apply(Device device, ZonedDateTime now) {
         if (device.getType() != DeviceType.RADIATOR) {
             return;
         }
@@ -25,11 +31,11 @@ public class RadiatorService implements DeviceService {
 
         DeviceSettings settings = device.getSettings();
 
-        if (settings == null) {
+        WeatherMeasurement weatherMeasurement = device.getRoom().getWeather();
+
+        if (weatherMeasurement == null || settings == null) {
             return;
         }
-
-        WeatherMeasurement weatherMeasurement = device.getRoom().getWeather();
 
         applyRadiatorRule(device, settings, weatherMeasurement);
     }
@@ -46,17 +52,19 @@ public class RadiatorService implements DeviceService {
 
             if (!isRadiatorAlready(device, settings.getRadiatorTempWhenCold())) {
                 // SENT KAFKA
+                deviceCommandService.setRadiatorTemperature(
+                        device, settings.getRadiatorTempWhenCold(), AutoDeviceCommand.AUTO_COLD_WEATHER);
                 log.info("Auto radiator cold rule: {}", device.getExternalId());
             }
-            return;
-        }
 
-        if (settings.getHotWeatherTemperature() != null
+        } else if (settings.getHotWeatherTemperature() != null
                 && settings.getRadiatorTempWhenHot() != null
                 && outsideTemp.compareTo(settings.getHotWeatherTemperature()) >= 0) {
 
             if (!isRadiatorAlready(device, settings.getRadiatorTempWhenHot())) {
                 // SENT KAFKA
+                deviceCommandService.setRadiatorTemperature(
+                        device, settings.getRadiatorTempWhenHot(), AutoDeviceCommand.AUTO_HOT_WEATHER);
                 log.info("Auto radiator hot rule: {}", device.getExternalId());
             }
         }

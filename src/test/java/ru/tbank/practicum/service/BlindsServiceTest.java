@@ -2,8 +2,14 @@ package ru.tbank.practicum.service;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
-import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.DeviceSettings;
 import ru.tbank.practicum.entity.DeviceState;
@@ -12,20 +18,27 @@ import ru.tbank.practicum.entity.WeatherMeasurement;
 import ru.tbank.practicum.entity.statePayload.BlindsStatePayload;
 import ru.tbank.practicum.enums.DeviceType;
 
+@ExtendWith(MockitoExtension.class)
 class BlindsServiceTest {
 
-    private final BlindsService blindsService = new BlindsService();
+    @Mock
+    private DeviceCommandService deviceCommandService;
+
+    @InjectMocks
+    private BlindsService blindsService;
 
     @Test
-    public void apply_deviceTypeIsNotBlinds_doesNothing() {
+    void apply_deviceTypeIsNotBlinds_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.RADIATOR);
 
-        assertThatCode(() -> blindsService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> blindsService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_blindsSettingsAreNull_doesNothing() {
+    void apply_blindsSettingsAreNull_doesNothing() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
 
@@ -34,22 +47,26 @@ class BlindsServiceTest {
         room.setWeather(new WeatherMeasurement());
 
         DeviceSettings deviceSettings = new DeviceSettings();
+
         device.setRoom(room);
         device.setSettings(deviceSettings);
 
-        assertThatCode(() -> blindsService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> blindsService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_openTimeMatchesAndBlindsAreClosed_completesWithoutException() {
+    void apply_openTimeMatchesAndBlindsAreClosed_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
-        device.setExternalId(java.util.UUID.randomUUID());
+        device.setExternalId(UUID.randomUUID());
+
+        ZoneId zoneId = ZoneId.of("Europe/Saratov");
+        ZonedDateTime now = ZonedDateTime.now(zoneId).withSecond(0).withNano(0);
 
         DeviceSettings settings = new DeviceSettings();
-        settings.setBlindsOpenTime(LocalTime.now(java.time.ZoneId.of("Europe/Saratov"))
-                .withSecond(0)
-                .withNano(0));
+        settings.setBlindsOpenTime(now.toLocalTime());
         device.setSettings(settings);
 
         WeatherMeasurement weather = new WeatherMeasurement();
@@ -68,14 +85,14 @@ class BlindsServiceTest {
         deviceState.setDeviceStatePayload(payload);
         device.setDeviceState(deviceState);
 
-        assertThatCode(() -> blindsService.apply(device)).doesNotThrowAnyException();
+        assertThatCode(() -> blindsService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_brightSunConditionMatches_completesWithoutException() {
+    void apply_brightSunConditionMatches_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
-        device.setExternalId(java.util.UUID.randomUUID());
+        device.setExternalId(UUID.randomUUID());
 
         DeviceSettings settings = new DeviceSettings();
         settings.setMinCloudinessWhenNormal(50.0);
@@ -98,14 +115,16 @@ class BlindsServiceTest {
         deviceState.setDeviceStatePayload(payload);
         device.setDeviceState(deviceState);
 
-        assertThatCode(() -> blindsService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> blindsService.apply(device, now)).doesNotThrowAnyException();
     }
 
     @Test
-    public void apply_hotWeatherConditionMatches_completesWithoutException() {
+    void apply_hotWeatherConditionMatches_completesWithoutException() {
         Device device = new Device();
         device.setType(DeviceType.BLINDS);
-        device.setExternalId(java.util.UUID.randomUUID());
+        device.setExternalId(UUID.randomUUID());
 
         DeviceSettings settings = new DeviceSettings();
         settings.setMinCloudinessWhenNormal(5.0);
@@ -128,6 +147,8 @@ class BlindsServiceTest {
         deviceState.setDeviceStatePayload(payload);
         device.setDeviceState(deviceState);
 
-        assertThatCode(() -> blindsService.apply(device)).doesNotThrowAnyException();
+        ZonedDateTime now = ZonedDateTime.now();
+
+        assertThatCode(() -> blindsService.apply(device, now)).doesNotThrowAnyException();
     }
 }
