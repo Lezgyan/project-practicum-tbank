@@ -11,21 +11,17 @@ import ru.tbank.practicum.service.AutomationService;
 public class ScheduledHouseRules {
 
     private final AutomationService automationService;
-    private final HouseRulesMetrics metrics;
 
+    private final HouseRulesMetrics metrics;
 
     @Scheduled(cron = "${app.house-rules.rate}")
     private void checkHouseRules() {
-        metrics.runningNow().set(1);
         try {
-            metrics.timer().record(automationService::process);
-            metrics.successCounter().increment();
-
+            metrics.timer(automationService::process);
+            metrics.incrementSuccess();
         } catch (Exception e) {
-            metrics.errorCounter().increment();
+            metrics.incrementError();
             e.printStackTrace();
-        } finally {
-            metrics.runningNow().set(0);
         }
     }
 }
