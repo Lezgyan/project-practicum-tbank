@@ -1,13 +1,11 @@
 package ru.tbank.practicum.metrics;
 
-import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.tbank.practicum.enums.HouseRulesProcessResult;
-
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
