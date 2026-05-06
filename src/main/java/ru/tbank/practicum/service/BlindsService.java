@@ -56,6 +56,7 @@ public class BlindsService implements DeviceService {
         LocalTime closeTime = settings.getBlindsCloseTime();
 
         if (openTime == null && closeTime == null) {
+            log.info("openTime и closeTime равны null: {}", device.getId());
             return;
         }
 
@@ -63,10 +64,12 @@ public class BlindsService implements DeviceService {
 
         Boolean desiredOpen = calculateDesiredOpenState(localNow, openTime, closeTime);
         if (desiredOpen == null) {
+            log.info("desiredOpen равен null: {}", device.getId());
             return;
         }
 
         if (isBlindsAlready(device, desiredOpen)) {
+            log.info("isBlindsAlready равен false: {}", device.getId());
             return;
         }
 

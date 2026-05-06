@@ -2,10 +2,12 @@ package ru.tbank.practicum.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.tbank.practicum.dto.internal.DtoCreateRoom;
 import ru.tbank.practicum.dto.internal.DtoCreateRoomResponse;
+import ru.tbank.practicum.dto.internal.RoomResponseDto;
 import ru.tbank.practicum.entity.Device;
 import ru.tbank.practicum.entity.Room;
 import ru.tbank.practicum.mapper.MapperRoom;
@@ -38,5 +40,10 @@ public class RoomService {
                 .orElseThrow(() -> new EntityNotFoundException("Device not found: " + deviceId));
 
         room.addDevice(device);
+    }
+
+    public List<RoomResponseDto> getRooms() {
+        List<Room> roomList = roomRepository.findAll();
+        return mapperRoom.toDtoList(roomList);
     }
 }

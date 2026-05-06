@@ -1,6 +1,7 @@
 package ru.tbank.practicum.service;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.tbank.practicum.avro.DeviceCommandMessageAvro;
@@ -23,6 +24,7 @@ import ru.tbank.practicum.repository.DeviceRepository;
 import ru.tbank.practicum.repository.DeviceStateRepository;
 
 @Service
+@Slf4j
 @AllArgsConstructor
 public class DeviceCommandService {
     private final DeviceRepository deviceRepository;
@@ -43,7 +45,7 @@ public class DeviceCommandService {
 
         BlindsCommandPayload blindsCommandPayload = new BlindsCommandPayload(blindsState, command);
 
-        CommandType commandType = open ? CommandType.CLOSE : CommandType.OPEN;
+        CommandType commandType = (BlindsState.CLOSED).equals(blindsState) ? CommandType.CLOSE : CommandType.OPEN;
 
         sendCommand(device, commandType, blindsCommandPayload, kafkaTopicProperties.blindsCommands());
     }
@@ -71,7 +73,7 @@ public class DeviceCommandService {
 
     private void sendCommand(
             Device device, CommandType commandType, DeviceCommandPayload deviceCommandPayload, String topic) {
-        DeviceCommandLog log = deviceCommandLogRepository.save(DeviceCommandLog.builder()
+        DeviceCommandLog myLog = deviceCommandLogRepository.save(DeviceCommandLog.builder()
                 .device(device)
                 .commandType(commandType)
                 .deviceCommandPayload(deviceCommandPayload)
@@ -81,12 +83,13 @@ public class DeviceCommandService {
         try {
             DeviceCommandMessageAvro event = mapper.toAvroMessage(device, commandType, deviceCommandPayload);
             producer.send(topic, String.valueOf(device.getExternalId()), event);
-            log.setStatus(CommandStatus.SENT);
+            myLog.setStatus(CommandStatus.SENT);
         } catch (Exception e) {
-            log.setStatus(CommandStatus.FAILED);
+            myLog.setStatus(CommandStatus.FAILED);
+            log.error("sendCommand", e);
             throw new RuntimeException(e);
         } finally {
-            deviceCommandLogRepository.save(log);
+            deviceCommandLogRepository.save(myLog);
         }
     }
 

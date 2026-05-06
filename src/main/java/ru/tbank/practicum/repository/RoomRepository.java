@@ -25,4 +25,11 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
             WHERE r.id = :id
             """)
     Optional<Room> findById(long id);
+
+    //    @Transactional
+    //    @Query("""
+    //            SELECT r FROM Room r
+    //            JOIN FETCH d.deviceState
+    //            """)
+    //    List<Room> getRoomsForFront();
 }
